@@ -9,6 +9,34 @@
 cScrWidth 				= 320
 cScrHeight 				= 200
 
+ 
+;proc displayClearScreen
+;@desc Clears screen
+
+
+displayClearScreen PROC NEAR USES ES DI AX CX 
+
+	mov ES, seg videobuf ; ES is pointer naar het fardata segment waar de videobuf zich bevindt
+	ASSUME ES:seg videobuf ;optioneel, voor betere error messages
+	mov DI, offset videobuf ;pointer naar offset videobuf
+	
+	mov AX, 0
+	mov CX, videobuf_size
+	cld ;clear direction flag
+	rep stosb
+ENDP
+
+displayUpdateVram PROC NEAR USES
+
+	mov DS, seg videobuf
+	ASSUME DS:seg videobuf
+	mov DI, offset videobuf
+	
+	mov ES, seg 
+	
+;under construction
+
+
 
 ; macro xyConvertToMemOffset
 ; @destroys: AX, DX
