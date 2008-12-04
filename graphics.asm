@@ -8,7 +8,7 @@
 ; constants
 cScrWidth 				= 320
 cScrHeight 				= 200
-OldVideoMode db ?
+videobuf_size				= 64000
 
 ;MACROS;
 ;Macro SetVideoMode.
@@ -141,6 +141,7 @@ loopDraw:
 	add di, cScrWidth 
 	dec ax
 	jnz loopDraw
+	ret
 
 graphicsDraw ENDP
 
