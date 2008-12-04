@@ -24,15 +24,40 @@ displayClearScreen PROC NEAR USES ES DI AX CX
 	mov CX, videobuf_size
 	cld ;clear direction flag
 	rep stosb
-ENDP
+	ret
+displayClearScreen ENDP
 
-displayUpdateVram PROC NEAR USES
+displayUpdateVram PROC NEAR USES DS SI AX EX DI AL
 
 	mov DS, seg videobuf
 	ASSUME DS:seg videobuf
-	mov DI, offset videobuf
+	mov SI, offset videobuf
 	
-	mov ES, seg 
+	mov CX, videobuf_size
+
+	mov AX, 0A000h ;address of vram
+	mov ES, AX	
+	Xor DI, DI
+TestBusyWithVblank:
+	in AL, DX
+	and AL, 8
+	jnz BusyWithVblank
+TestStartVblank:
+	in AL, DX
+	and AL, 8
+	jz TestStartVblank
+	;copy videobuf to vram
+	cld
+	rep movsb 
+	ret
+
+displayUpdateVram ENDP
+	
+
+
+
+
+
 	
 ;under construction
 
@@ -74,7 +99,6 @@ graphicsDraw PROC NEAR USES ax cx di es
 
 	xyConvertToMemOffset bx, dx	; 
 	add di, ax
-
 	mov cx, es:[di]
 	mov ax, es:[di+1]
 
@@ -86,9 +110,5 @@ loopDraw:
 	jnz loopDraw
 
 graphicsDraw ENDP
-
-
-
-
 
 	
