@@ -60,7 +60,7 @@ displayClearScreen PROC NEAR USES ES DI AX CX
 	ret
 displayClearScreen ENDP
 
-displayUpdateVram PROC NEAR USES DS SI AX EX DI AL
+displayUpdateVram PROC NEAR USES DS SI AX ES DI AL
 
 	mov DS, seg videobuf
 	ASSUME DS:seg videobuf
