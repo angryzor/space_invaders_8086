@@ -8,8 +8,41 @@
 ; constants
 cScrWidth 				= 320
 cScrHeight 				= 200
+OldVideoMode db ?
 
- 
+;MACROS;
+;Macro SetVideoMode.
+SetVideoMode macro NewMode, OldMode
+	;current mode
+	mov ah,0Fh
+    int 10h
+    mov OldMode,al
+	;Set new video Mode
+    mov ah,00h
+    mov al,NewMode
+    int 10h
+ENDM
+
+;Macro restore video Mode.
+RestoreVideoMode macro OldMode
+    mov ah,00h
+    mov al,OldMode
+    int 10h
+ENDM
+
+;proc Vgamode
+;Set video mode on vga 320x200x256
+displayVgaMode proc near
+	setvideomode 13h, OldVideoMode
+	ret
+displayVgaMode ENDP
+
+;Proc SetOldMode
+displaySetOldMode proc near
+	RestorveVideoMode macro OldVideoMode
+	ret
+displaySetOldMode ENDP
+
 ;proc displayClearScreen
 ;@desc Clears screen
 
