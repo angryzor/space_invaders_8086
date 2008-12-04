@@ -1,4 +1,4 @@
 INCLUDE sprites.inc
 
-.FARDATA videobufseg
+.FARDATA? videobufseg
 videobuf dw 64000 dup (?)
