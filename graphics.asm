@@ -39,7 +39,7 @@ displayVgaMode ENDP
 
 ;Proc SetOldMode
 displaySetOldMode proc near
-	RestorveVideoMode macro OldVideoMode
+	RestoreVideoMode OldVideoMode
 	ret
 displaySetOldMode ENDP
 

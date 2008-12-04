@@ -3,8 +3,7 @@ TITLE space-invader
 .STACK 1024
 .DATA 
 ;all data is defined in data.inc
-INCLUDE DATA.inc
-.FARDATA videomem
+INCLUDE DATA.asm
 .CODE
 .STARTUP
 	call displayVgaMode
@@ -23,3 +22,5 @@ tehloop:
 
 
 INCLUDE graphics.asm
+
+END

@@ -1,4 +1,4 @@
-INCLUDE sprites.inc
+INCLUDE sprites.asm
 OldVideoMode db ?
 
 .FARDATA? videobufseg
