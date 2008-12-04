@@ -8,7 +8,6 @@
 ; constants
 cScrWidth 				= 320
 cScrHeight 				= 200
-videobuf_size			= 64000
 
 ;MACROS;
 ;Macro SetVideoMode.
@@ -57,7 +56,7 @@ displayClearScreen PROC NEAR USES ES DI AX CX
 	mov DI, offset videobuf ;pointer naar offset videobuf
 	
 	mov AX, 0
-	mov CX, videobuf_size
+	mov CX, cVideobufSize
 	cld ;clear direction flag
 	rep stosb
 	ret
@@ -71,7 +70,7 @@ displayUpdateVram PROC NEAR USES SI AX ES DI DX
 	ASSUME DS:seg videobuf
 	mov SI, offset videobuf
 	
-	mov CX, videobuf_size
+	mov CX, cVideobufSize
 
 	mov AX, 0A000h ;address of vram
 	mov ES, AX	
