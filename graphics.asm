@@ -8,7 +8,7 @@
 ; constants
 cScrWidth 				= 320
 cScrHeight 				= 200
-videobuf_size				= 64000
+videobuf_size			= 64000
 
 ;MACROS;
 ;Macro SetVideoMode.
@@ -49,8 +49,9 @@ displaySetOldMode ENDP
 
 displayClearScreen PROC NEAR USES ES DI AX CX 
 
-	mov ES, seg videobuf ; ES is pointer naar het fardata segment waar de videobuf zich bevindt
-	ASSUME ES:seg videobuf ;optioneel, voor betere error messages
+	mov ax, seg videobuf 
+	mov es, ax				; ES is pointer naar het fardata segment waar de videobuf zich bevindt
+	ASSUME ES:seg videobuf 	;optioneel, voor betere error messages
 	mov DI, offset videobuf ;pointer naar offset videobuf
 	
 	mov AX, 0
@@ -60,9 +61,10 @@ displayClearScreen PROC NEAR USES ES DI AX CX
 	ret
 displayClearScreen ENDP
 
-displayUpdateVram PROC NEAR USES DS SI AX ES DI AL
+displayUpdateVram PROC NEAR USES SI AX ES DI
 
-	mov DS, seg videobuf
+	mov ax, seg videobuf
+	mov ds, ax
 	ASSUME DS:seg videobuf
 	mov SI, offset videobuf
 	
@@ -74,7 +76,7 @@ displayUpdateVram PROC NEAR USES DS SI AX ES DI AL
 TestBusyWithVblank:
 	in AL, DX
 	and AL, 8
-	jnz BusyWithVblank
+	jnz TestBusyWithVblank
 TestStartVblank:
 	in AL, DX
 	and AL, 8
@@ -82,6 +84,10 @@ TestStartVblank:
 	;copy videobuf to vram
 	cld
 	rep movsb 
+	
+	mov AX, @DATA ; verzekeren dat DS terug naar DATA segment wijst
+	mov DS, AX
+	ASSUME DS:@DATA
 	ret
 
 displayUpdateVram ENDP
@@ -130,18 +136,18 @@ graphicsDraw PROC NEAR USES ax cx di es
 
 	mov di, offset videobuf		; set videobuf offset
 
-	xyConvertToMemOffset bx, dx	; 
-	add di, ax
-	mov cx, es:[di]
-	mov ax, es:[di+1]
+	xyConvertToMemOffset bx, dx	; haal sprite coordinaten op en converteer naar een memory offset > AX
+	add di, ax                  ; zet beginpositie in de videobuf op de destination coordinaten van de sprite
+	mov cx, [si]				; haal sprite width op >  CX
+	mov ax, [si+1]				; haal sprite height op > AX
 
-	add di, 2
+	add si, 2					; increment source pointer
 loopDraw:
-        rep movsb
-	add di, cScrWidth 
-	dec ax
-	jnz loopDraw
-	ret
+    rep movsb					; kopieer 1 lijn
+	add di, cScrWidth 			; verzet dest ptr naar volgende lijn
+	dec ax						; teller 1 omlaag
+	jnz loopDraw				; loopen
+	ret							; return
 
 graphicsDraw ENDP
 
