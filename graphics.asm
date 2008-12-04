@@ -33,8 +33,10 @@ ENDM
 ;proc Vgamode
 ;Set video mode on vga 320x200x256
 displayVgaMode proc near
+
 	setvideomode 13h, OldVideoMode
 	ret
+
 displayVgaMode ENDP
 
 ;Proc SetOldMode
@@ -59,9 +61,10 @@ displayClearScreen PROC NEAR USES ES DI AX CX
 	cld ;clear direction flag
 	rep stosb
 	ret
+	
 displayClearScreen ENDP
 
-displayUpdateVram PROC NEAR USES SI AX ES DI
+displayUpdateVram PROC NEAR USES SI AX ES DI DX
 
 	mov ax, seg videobuf
 	mov ds, ax
@@ -73,6 +76,7 @@ displayUpdateVram PROC NEAR USES SI AX ES DI
 	mov AX, 0A000h ;address of vram
 	mov ES, AX	
 	Xor DI, DI
+    mov dx, 03dah ; VGA status port                 
 TestBusyWithVblank:
 	in AL, DX
 	and AL, 8
@@ -137,14 +141,19 @@ graphicsDraw PROC NEAR USES ax cx di es
 	mov di, offset videobuf		; set videobuf offset
 
 	xyConvertToMemOffset bx, dx	; haal sprite coordinaten op en converteer naar een memory offset > AX
-	add di, ax                  ; zet beginpositie in de videobuf op de destination coordinaten van de sprite
-	mov cx, [si]				; haal sprite width op >  CX
-	mov ax, [si+1]				; haal sprite height op > AX
+	add di, ax    	; zet beginpositie in de videobuf op de destination coordinaten van de sprite
+	xor dx, dx
+	xor ax, ax
+	mov dl, [si]				; haal sprite width op >  DL
+	mov al, [si+1]				; haal sprite height op > AL
 
 	add si, 2					; increment source pointer
 loopDraw:
+	mov cx, dx
+	cld
     rep movsb					; kopieer 1 lijn
 	add di, cScrWidth 			; verzet dest ptr naar volgende lijn
+	sub di, dx					; begin terug op juiste x waarde
 	dec ax						; teller 1 omlaag
 	jnz loopDraw				; loopen
 	ret							; return

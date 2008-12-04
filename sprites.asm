@@ -2,7 +2,7 @@
 ;                   1 byte height,
 ; 	         arbitrary bytes
 
-bMonster1 db	16, 16 
+bMonster1 db	16, 14
 db				00h,00h,00h,01h,01h,00h,00h,00h,00h,00h,00h,01h,01h,00h,00h,00h
 db				00h,00h,00h,01h,01h,00h,00h,00h,00h,00h,00h,01h,01h,00h,00h,00h
 db				00h,00h,00h,00h,00h,01h,01h,00h,00h,01h,01h,00h,00h,00h,00h,00h

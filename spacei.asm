@@ -10,12 +10,12 @@ INCLUDE DATA.asm
 	call displayClearScreen
 	mov SI, offset bMonster1
 	mov BX, 10
-	mov DX, 20
+	mov DX, 100
 	mov CX, 64000
 	call graphicsDraw
 	call displayUpdateVram
 tehloop:
-	loop tehloop
+	jmp tehloop
 	call displaySetOldMode
 .EXIT
 
