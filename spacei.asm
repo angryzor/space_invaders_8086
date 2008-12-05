@@ -5,14 +5,11 @@ TITLE space-invader
 ;all data is defined in data.inc
 INCLUDE DATA.asm
 .CODE
+INCLUDE graphics.asm
 .STARTUP
 	call displayVgaMode
 	call displayClearScreen
-	mov SI, offset bMonster1
-	mov BX, 10
-	mov DX, 100
-	mov CX, 64000
-	call graphicsDraw
+	graphicsDrawSpriteM bMonster1, 140, 100
 	call displayUpdateVram
 tehloop:
 	jmp tehloop
@@ -21,6 +18,5 @@ tehloop:
 
 
 
-INCLUDE graphics.asm
 
 END

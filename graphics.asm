@@ -9,9 +9,11 @@
 cScrWidth 				= 320
 cScrHeight 				= 200
 
-;MACROS;
-;Macro SetVideoMode.
-SetVideoMode macro NewMode, OldMode
+; macro setVideoMode
+; @destroys: AX
+; @result: OldMode: old mode
+; @desc: sets video mode to NewMode, saves old mode in OldMode
+setVideoMode macro NewMode, OldMode
 	;current mode
 	mov ah,0Fh
     int 10h
@@ -22,32 +24,40 @@ SetVideoMode macro NewMode, OldMode
     int 10h
 ENDM
 
-;Macro restore video Mode.
-RestoreVideoMode macro OldMode
+; macro restoreVideoMode
+; @destroys: AX
+; @result: /
+; @desc: sets video mode back to OldMode
+restoreVideoMode macro OldMode
     mov ah,00h
     mov al,OldMode
     int 10h
 ENDM
 
-;proc Vgamode
-;Set video mode on vga 320x200x256
-displayVgaMode proc near
+; proc Vgamode
+; @destroys: /
+; @result: /
+; @desc: Set video mode to VGA 320x200x256 (Mode 13h)
+displayVgaMode PROC NEAR USES AX
 
 	setvideomode 13h, OldVideoMode
 	ret
 
 displayVgaMode ENDP
 
-;Proc SetOldMode
-displaySetOldMode proc near
+;proc displaySetOldMode
+; @destroys: /
+; @result: /
+; @desc: Sets video mode back to original mode
+displaySetOldMode PROC NEAR USES AX
 	RestoreVideoMode OldVideoMode
 	ret
 displaySetOldMode ENDP
 
-;proc displayClearScreen
-;@desc Clears screen
-
-
+; proc displayClearScreen
+; @destroys: /
+; @result: /
+; @desc Clears videobuf
 displayClearScreen PROC NEAR USES ES DI AX CX 
 
 	mov ax, seg videobuf 
@@ -63,6 +73,10 @@ displayClearScreen PROC NEAR USES ES DI AX CX
 	
 displayClearScreen ENDP
 
+; proc displayUpdateVram
+; @destroys: /
+; @result: /
+; @desc: Updates VGA VRAM with videobuf contents
 displayUpdateVram PROC NEAR USES SI AX ES DI DX
 
 	mov ax, seg videobuf
@@ -95,20 +109,23 @@ TestStartVblank:
 
 displayUpdateVram ENDP
 	
-
-
-
-
-
+; proc setPalette
+; @desc sets video palette to palette in ES:DX
+setPalette PROC NEAR USES AX ES BX DX
+;	mov ax, seg videoPalette
+	mov es, ax
 	
-;under construction
-
+	mov ax, 1012h
+	xor bx, bx
+;	mov dx, videoPalette
+	ret
+setPalette ENDP
 
 
 ; macro xyConvertToMemOffset
 ; @destroys: AX, DX
 ; @result: AX: contains memory offset
-; @description: converts 2 registers containing x and y to a memory offset
+; @desc: converts 2 registers containing x and y to a memory offset
 xyConvertToMemOffset MACRO x ,y
 	mov ax, cScrWidth
 	mul y
@@ -118,7 +135,7 @@ ENDM
 ; macro xyConvertToMemOffsetSafe
 ; @destroys: /
 ; @result: AX: contains memory offset
-; @description: a register-safe version of xyConvertToMemOffset
+; @desc: a register-safe version of xyConvertToMemOffset
 xyConvertToMemOffsetSafe MACRO x, y
 	push ax
 	push dx
@@ -131,8 +148,10 @@ ENDM
 ; @param SI = sprite address
 ; @param BX = x offset
 ; @param DX = y offset
-; @desc Draws a sprite to memory buffer
-graphicsDraw PROC NEAR USES ax cx di es
+; @destroys: /
+; @result: /
+; @desc: Draws a sprite to memory buffer
+graphicsDrawSprite PROC NEAR USES ax cx di es
 	mov ax, seg videobuf		; set video buf segment
 	mov es, ax
 	ASSUME ES:SEG videobuf
@@ -157,6 +176,15 @@ loopDraw:
 	jnz loopDraw				; loopen
 	ret							; return
 
-graphicsDraw ENDP
+graphicsDrawSprite ENDP
 
-	
+; macro graphicsDrawSpriteM
+; @destroys: /
+; @result: /
+; @desc: Draws a sprite to memory buffer (convenience macro)
+graphicsDrawSpriteM MACRO spriteAddr, x, y
+	mov SI, offset spriteAddr
+	mov BX, x
+	mov DX, y
+	call graphicsDrawSprite
+ENDM
