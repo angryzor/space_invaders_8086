@@ -109,18 +109,34 @@ TestStartVblank:
 
 displayUpdateVram ENDP
 	
-; proc setPalette
-; @desc sets video palette to palette in ES:DX
-setPalette PROC NEAR USES AX ES BX DX
-;	mov ax, seg videoPalette
-	mov es, ax
-	
+; proc displaySetPalette
+; @param ES:SI: palette
+; @destroys: /
+; @result: /
+; @desc: sets video palette to palette in ES:DX
+displaySetPalette PROC NEAR USES AX BX CX DX
 	mov ax, 1012h
 	xor bx, bx
-;	mov dx, videoPalette
+	xor cx, cx
+	mov cl, byte ptr es:[si]
+	mov dx, si
+	inc dx
+	int 10
 	ret
-setPalette ENDP
+displaySetPalette ENDP
 
+; macro displaySetPaletteM
+; @param palette: the palette to be used
+; @destroys: AX, ES, SI
+; @result: /
+; @desc: sets video palette to palette in ES:DX
+displaySetPaletteM MACRO palette
+	mov ax, seg palette
+	mov es, ax
+	ASSUME ES:seg palette
+	mov si, offset palette
+	call displaySetPalette
+ENDM
 
 ; macro xyConvertToMemOffset
 ; @destroys: AX, DX
@@ -178,13 +194,42 @@ loopDraw:
 
 graphicsDrawSprite ENDP
 
-; macro graphicsDrawSpriteM
+; proc graphicsDraw
 ; @destroys: /
+; @result: /
+; @desc: Draws a 256 color test line
+graphicsDrawTest PROC NEAR USES AX ES DI CX
+	mov ax, seg videobuf		; set video buf segment
+	mov es, ax
+	ASSUME ES:SEG videobuf
+
+	mov di, offset videobuf		; set videobuf offset
+	
+	mov ax, 255
+	add di, ax
+	
+	mov CX, 200
+loopDrawTest:
+	std
+	stosb
+	dec ax
+	jnz loopDrawTest
+	
+	mov ax, 255
+	add di, cScrWidth
+	add di, ax
+	
+	loop loopDrawTest
+	ret
+graphicsDrawTest ENDP
+
+; macro graphicsDrawSpriteM
+; @destroys: SI, BX, DX
 ; @result: /
 ; @desc: Draws a sprite to memory buffer (convenience macro)
 graphicsDrawSpriteM MACRO spriteAddr, x, y
-	mov SI, offset spriteAddr
-	mov BX, x
-	mov DX, y
+	mov si, offset spriteAddr
+	mov bx, x
+	mov dx, y
 	call graphicsDrawSprite
 ENDM

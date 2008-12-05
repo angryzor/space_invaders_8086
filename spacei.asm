@@ -6,13 +6,19 @@ TITLE space-invader
 INCLUDE DATA.asm
 .CODE
 INCLUDE graphics.asm
+INCLUDE graphhlp.asm
 .STARTUP
 	call displayVgaMode
+	displayHelpersFillGrayScalePalette bScratchPalette
+	displaySetPaletteM bScratchPalette
 	call displayClearScreen
-	graphicsDrawSpriteM bMonster1, 140, 100
+	call graphicsDrawTest
+;	graphicsDrawSpriteM bMonster1, 140, 100
 	call displayUpdateVram
-tehloop:
-	jmp tehloop
+
+	xor ah, ah
+	int 16h
+	
 	call displaySetOldMode
 .EXIT
 
