@@ -1,5 +1,5 @@
-; sprite:=     1 byte width,
-;                   1 byte height,
+; sprite:=   1 byte width,
+;            1 byte height,
 ; 	         arbitrary bytes
 
 bMonster1 db	16, 14
