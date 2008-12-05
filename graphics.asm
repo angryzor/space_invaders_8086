@@ -233,3 +233,19 @@ graphicsDrawSpriteM MACRO spriteAddr, x, y
 	mov dx, y
 	call graphicsDrawSprite
 ENDM
+
+; macro graphicsDrawSpriteFarM
+; @destroys: SI, AX, BX, DX
+; @result: /
+; @desc: Draws a sprite to memory buffer (convenience macro)
+graphicsDrawSpriteFarM MACRO spriteAddr, x, y
+	mov bx, x
+	mov dx, y
+	mov ax, seg spriteAddr
+	mov ds, ax
+	ASSUME DS:seg spriteAddr
+	mov si, offset spriteAddr
+	call graphicsDrawSprite
+	mov ds, @DATA
+	ASSUME DS:@DATA
+ENDM
