@@ -10,7 +10,7 @@ db				000h,000h,000h,000h,000h,03fh,03fh,000h,000h,03fh,03fh,000h,000h,000h,000h
 db				000h,000h,000h,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,000h,000h,000h
 db				000h,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,000h
 db				000h,03fh,03fh,03fh,03fh,000h,000h,03fh,03fh,000h,000h,03fh,03fh,03fh,03fh,000h
-db				03fh,03fh,03fh,03fh,03fh,000h,000h,03fh,03fh,000h,000h,03fh,03fh,03fh,03fh,03fh
+db				03fh,03fh,03fh,03fh,03fh,049h,000h,03fh,03fh,049h,000h,03fh,03fh,03fh,03fh,03fh
 db				03fh,03fh,000h,000h,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,000h,000h,03fh,03fh
 db				03fh,03fh,000h,000h,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,000h,000h,03fh,03fh
 db				03fh,03fh,000h,000h,03fh,03fh,000h,000h,000h,000h,03fh,03fh,000h,000h,03fh,03fh

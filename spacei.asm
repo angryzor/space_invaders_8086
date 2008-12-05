@@ -14,6 +14,12 @@ INCLUDE graphhlp.asm
 	call displayClearScreen
 	call graphicsDrawTest
 	graphicsDrawSpriteM bMonster1, 140, 100
+	graphicsDrawSpriteM bMonster1, 140, 120
+	graphicsDrawSpriteM bMonster1, 140, 140
+	graphicsDrawSpriteM bMonster1, 140, 160
+	graphicsDrawSpriteM bMonster1, 140, 180
+	graphicsDrawSpriteM bMonster1, 140, 80
+	graphicsDrawSpriteM bMonster1, 140, 60
 	graphicsDrawSpriteM bSpaceShip, 160, 100
 	call displayUpdateVram
 
