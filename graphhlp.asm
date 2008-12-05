@@ -12,16 +12,16 @@ displayHelpersFillGrayScalePalette MACRO address
 	
 	mov al, 64
 	mov byte ptr es:[di], al	;set palette size to 64
-	inc di				; set DI to start of palette data
+	inc di						; set DI to start of palette data
 	
-	xor ax, ax			; AX = 0
+	xor ax, ax					; AX = 0
 		
-	mov cx, 64			; loop 64 times
+	mov cx, 64					; loop 64 times
 	
 fillGSLoop:
-	stosb				; store AL in es:[di] and increment di, 3 times
-	stosb				;
-	stosb				;
-	inc al				; increment AL
-	loop fillGSLoop 	; loop
+	stosb						; store AL in es:[di] and increment di, 3 times
+	stosb						;
+	stosb						;
+	inc al						; increment AL
+	loop fillGSLoop 			; loop
 ENDM

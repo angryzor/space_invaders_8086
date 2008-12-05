@@ -13,7 +13,8 @@ INCLUDE graphhlp.asm
 	displaySetPaletteM bScratchPalette
 	call displayClearScreen
 	call graphicsDrawTest
-;	graphicsDrawSpriteM bMonster1, 140, 100
+	graphicsDrawSpriteM bMonster1, 140, 100
+	graphicsDrawSpriteM bSpaceShip, 160, 100
 	call displayUpdateVram
 
 	xor ah, ah

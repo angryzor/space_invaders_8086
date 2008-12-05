@@ -3,30 +3,30 @@
 ; 	         arbitrary bytes
 
 bMonster1 db	16, 14
-db				00h,00h,00h,01h,01h,00h,00h,00h,00h,00h,00h,01h,01h,00h,00h,00h
-db				00h,00h,00h,01h,01h,00h,00h,00h,00h,00h,00h,01h,01h,00h,00h,00h
-db				00h,00h,00h,00h,00h,01h,01h,00h,00h,01h,01h,00h,00h,00h,00h,00h
-db				00h,00h,00h,00h,00h,01h,01h,00h,00h,01h,01h,00h,00h,00h,00h,00h
-db				00h,00h,00h,01h,01h,01h,01h,01h,01h,01h,01h,01h,01h,00h,00h,00h
-db				00h,01h,01h,01h,01h,01h,01h,01h,01h,01h,01h,01h,01h,01h,01h,00h
-db				00h,01h,01h,01h,01h,00h,00h,01h,01h,00h,00h,01h,01h,01h,01h,00h
-db				01h,01h,01h,01h,01h,00h,00h,01h,01h,00h,00h,01h,01h,01h,01h,01h
-db				01h,01h,00h,00h,01h,01h,01h,01h,01h,01h,01h,01h,00h,00h,01h,01h
-db				01h,01h,00h,00h,01h,01h,01h,01h,01h,01h,01h,01h,00h,00h,01h,01h
-db				01h,01h,00h,00h,01h,01h,00h,00h,00h,00h,01h,01h,00h,00h,01h,01h
-db				01h,01h,00h,00h,01h,01h,00h,00h,00h,00h,01h,01h,00h,00h,01h,01h
-db				00h,00h,00h,00h,00h,01h,00h,00h,00h,00h,01h,00h,00h,00h,00h,00h
-db				00h,00h,00h,00h,00h,01h,01h,00h,00h,01h,01h,00h,00h,00h,00h,00h
+db				000h,000h,000h,03fh,03fh,000h,000h,000h,000h,000h,000h,03fh,03fh,000h,000h,000h
+db				000h,000h,000h,03fh,03fh,000h,000h,000h,000h,000h,000h,03fh,03fh,000h,000h,000h
+db				000h,000h,000h,000h,000h,03fh,03fh,000h,000h,03fh,03fh,000h,000h,000h,000h,000h
+db				000h,000h,000h,000h,000h,03fh,03fh,000h,000h,03fh,03fh,000h,000h,000h,000h,000h
+db				000h,000h,000h,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,000h,000h,000h
+db				000h,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,000h
+db				000h,03fh,03fh,03fh,03fh,000h,000h,03fh,03fh,000h,000h,03fh,03fh,03fh,03fh,000h
+db				03fh,03fh,03fh,03fh,03fh,000h,000h,03fh,03fh,000h,000h,03fh,03fh,03fh,03fh,03fh
+db				03fh,03fh,000h,000h,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,000h,000h,03fh,03fh
+db				03fh,03fh,000h,000h,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,000h,000h,03fh,03fh
+db				03fh,03fh,000h,000h,03fh,03fh,000h,000h,000h,000h,03fh,03fh,000h,000h,03fh,03fh
+db				03fh,03fh,000h,000h,03fh,03fh,000h,000h,000h,000h,03fh,03fh,000h,000h,03fh,03fh
+db				000h,000h,000h,000h,000h,03fh,000h,000h,000h,000h,03fh,000h,000h,000h,000h,000h
+db				000h,000h,000h,000h,000h,03fh,03fh,000h,000h,03fh,03fh,000h,000h,000h,000h,000h
 				
 bSpaceship db   16, 8
-db				00h,00h,00h,00h,00h,00h,00h,01h,01h,00h,00h,00h,00h,00h,00h,00h
-db				00h,00h,00h,00h,00h,00h,01h,01h,01h,01h,00h,00h,00h,00h,00h,00h
-db				00h,01h,00h,00h,00h,00h,01h,01h,01h,01h,00h,00h,00h,00h,01h,00h
-db				00h,01h,00h,01h,00h,01h,01h,01h,01h,01h,01h,00h,01h,00h,01h,00h
-db				00h,01h,01h,01h,01h,01h,01h,01h,01h,01h,01h,01h,01h,01h,01h,00h
-db				01h,01h,01h,01h,01h,01h,01h,01h,01h,01h,01h,01h,01h,01h,01h,01h
-db				00h,01h,01h,00h,00h,00h,01h,01h,01h,01h,00h,00h,00h,01h,01h,00h
-db				00h,01h,00h,00h,00h,00h,00h,01h,01h,00h,00h,00h,00h,00h,01h,00h
+db				000h,000h,000h,000h,000h,000h,000h,03fh,03fh,000h,000h,000h,000h,000h,000h,000h
+db				000h,000h,000h,000h,000h,000h,03fh,03fh,03fh,03fh,000h,000h,000h,000h,000h,000h
+db				000h,03fh,000h,000h,000h,000h,03fh,03fh,03fh,03fh,000h,000h,000h,000h,03fh,000h
+db				000h,03fh,000h,03fh,000h,03fh,03fh,03fh,03fh,03fh,03fh,000h,03fh,000h,03fh,000h
+db				000h,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,000h
+db				03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh
+db				000h,03fh,03fh,000h,000h,000h,03fh,03fh,03fh,03fh,000h,000h,000h,03fh,03fh,000h
+db				000h,03fh,000h,000h,000h,000h,000h,03fh,03fh,000h,000h,000h,000h,000h,03fh,000h
 
 bBullet db 		3, 4
-db				01h,00h,00h,00h,01h,00h,00h,00h,01h,00h,01h,00h,00h,00h,00h,00h
+db				03fh,000h,000h,000h,03fh,000h,000h,000h,03fh,000h,03fh,000h,000h,000h,000h,000h

@@ -121,7 +121,7 @@ displaySetPalette PROC NEAR USES AX BX CX DX
 	mov cl, byte ptr es:[si]
 	mov dx, si
 	inc dx
-	int 10
+	int 10h
 	ret
 displaySetPalette ENDP
 
