@@ -61,3 +61,14 @@ fileClose MACRO handle, terminator
 	int 21h
 	jc terminator
 ENDM
+
+fileSeekStart MACRO handle, hiword, loword, terminator
+	mov ah, 42h
+	mov al, 0
+	mov bx, handle
+	mov cx, hiword
+	mov dx, loword
+	int 21h
+	jc terminator
+ENDM
+
