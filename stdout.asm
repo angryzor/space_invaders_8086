@@ -14,6 +14,6 @@ strOut ENDP
 ; @returns: /
 ; @desc: prints a string to stdo
 strOutM MACRO stri
-	mov DX, stri
+	mov DX, offset stri
 	call strOut
 ENDM

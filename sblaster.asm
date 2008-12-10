@@ -16,7 +16,7 @@ soundBlasterHandler PROC FAR
 	mov ds, ax
 	assume ds:seg sto_buf
 	
-	mov cx, bufsize/4
+	mov cx, bufsize/2
 	cld
 	rep movsb
 	mov ax, @DATA
@@ -24,11 +24,11 @@ soundBlasterHandler PROC FAR
 	assume DS:@DATA
 	
 	cmp di, bufsize
-	jnz noChangeBufPos
+	jnz short noChangeBufPos
 	mov di, 0
 noChangeBufPos:
 	cmp si, sto_bufsize
-	jnz noChangeStoBufPos
+	jnz short noChangeStoBufPos
 	mov si, 0
 noChangeStoBufPos:
 	mov next_bufpart, di
@@ -72,7 +72,7 @@ soundBlasterInit MACRO buffer, bufsize
 	dmaSetMode cDemandMode + cAddressIncrement + cAutoInitialization + cWriteTransfer + cChannel15
 	dmaClearFlipFlop
 	dmaSetAddress buffer, 1
-	dmaSetLength bufsize
+	dmaSetLength bufsize/2
 	sti
 	dmaEnableChannel
 	
