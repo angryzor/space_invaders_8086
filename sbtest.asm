@@ -36,7 +36,7 @@ makeBlasterHandler sbbuf, 16384, stobuf, 32768
 ;	rep stosb
 
 	
-	soundBlasterInit sbbuf, 16384
+	soundBlasterInit sbbuf, 16384, stobuf
 	
 	;int 0Fh
 	in al, 21h

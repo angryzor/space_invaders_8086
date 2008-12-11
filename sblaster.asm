@@ -8,13 +8,11 @@ bCommandOutput	= 41h
 makeBlasterHandler MACRO buffer, bufsize, sto_buf, sto_bufsize
 soundBlasterHandler PROC FAR
 ;	strOutM now
-	mov ax, next_bufpart
-	add ax, 5
-	mov next_bufpart, ax
-IF 0
-	mov di, offset buffer
-	mov si, offset sto_buf
-	add di, next_bufpart
+;	mov ax, next_bufpart
+;	add ax, 5
+;	mov next_bufpart, ax
+;IF 0
+	mov di, next_bufpart
 	add si, next_sto_bufpart
 	mov ax, seg buffer
 	mov es, ax
@@ -30,19 +28,19 @@ IF 0
 	mov ds, ax
 	assume DS:@DATA
 	
-	cmp di, bufsize
-	jnz short noChangeBufPos
-	mov di, 0
+	cmp di, (offset buffer + bufsize)
+	jl short noChangeBufPos
+	mov di, offset buffer
 noChangeBufPos:
-	cmp si, sto_bufsize
-	jnz short noChangeStoBufPos
-	mov si, 0
+	cmp si, (offset sto_buf + sto_bufsize)
+	jl short noChangeStoBufPos
+	mov si, offset sto_buf
 noChangeStoBufPos:
 	mov next_bufpart, di
 	mov next_sto_bufpart, si
 ;	mov al, 1
 ;	mov blaster_passed, al
-ENDIF
+;ENDIF
 	mov dx, wSBCBaseAddr+0Fh
 	in al, dx
 	mov al, 20h
@@ -52,7 +50,7 @@ soundBlasterHandler ENDP
 ENDM
 	
 
-soundBlasterInit MACRO buffer, bufsize
+soundBlasterInit MACRO buffer, bufsize, sto_buf
 	;get old interrupt
 	mov ah, 35h
 	mov al, 0Fh
@@ -142,4 +140,7 @@ Reset:
 	out dx, al
 	xchg al, ah
 	out dx, al
+	
+	mov next_bufpart, offset buffer
+	mov next_sto_bufpart, offset sto_buf
 ENDM
