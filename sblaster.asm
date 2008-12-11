@@ -5,41 +5,43 @@ wSBCBaseAddr = 220h
 bCommandInput	= 42h
 bCommandOutput	= 41h
 
-makeBlasterHandler MACRO buffer, bufsize, sto_buf, sto_bufsize
+makeBlasterHandler MACRO buffer, bufsize, h
 soundBlasterHandler PROC FAR
-;	strOutM now
-;	mov ax, next_bufpart
-;	add ax, 5
-;	mov next_bufpart, ax
-;IF 0
-	mov di, next_bufpart
-	mov si, next_sto_bufpart
-	mov ax, seg buffer
-	mov es, ax
-	assume es:seg buffer
-	mov ax, seg sto_buf
-	mov ds, ax
-	assume ds:seg sto_buf
+; have our own read file here. we need speed optimizations
+	mov ah, 03fh				; read command
+	mov bx, h				; file handle
+	mov dx, seg buffer			; buffer
+	mov ds, dx
+	ASSUME DS:seg buffer
+	mov dx, next_bufpart
+	mov cx, bufsize/2				; read size
+	int 21h
 	
-	mov cx, bufsize/2
-	cld
-	rep movsb
-	mov ax, @DATA
-	mov ds, ax
-	assume DS:@DATA
-	cmp di, (offset buffer + bufsize)
-	jl short noChangeBufPos
-	mov di, offset buffer
-noChangeBufPos:
-	cmp si, (offset sto_buf + sto_bufsize)
-	jl short noChangeStoBufPos
-	mov si, offset sto_buf
-noChangeStoBufPos:
-	mov next_bufpart, di
-	mov next_sto_bufpart, si
-;	mov al, 1
-;	mov blaster_passed, al
-;ENDIF
+	jnc fileReadCleanExit
+	
+	mov dx, @DATA			; reset seg
+	mov ds, dx
+	ASSUME DS:@DATA
+	jmp exitISR				; can't open file. terminate
+fileReadCleanExit:
+	mov dx, @DATA			; reset seg
+	mov ds, dx
+	ASSUME DS:@DATA
+	
+	cmp ax, cx				; check for eof
+	je exitISR
+EOF:
+	fileSeekStart h, 0, 0, exitISR
+	
+exitISR:
+	mov dx, next_bufpart
+	add dx, bufsize/2
+	cmp dx, (offset buffer + bufsize)
+	
+	jl EOIs
+	mov dx, offset buffer
+EOIs:
+	mov next_bufpart, dx
 	mov dx, wSBCBaseAddr+0Fh
 	in al, dx
 	mov al, 20h
@@ -49,7 +51,7 @@ soundBlasterHandler ENDP
 ENDM
 	
 
-soundBlasterInit MACRO buffer, bufsize, sto_buf
+soundBlasterInit MACRO buffer, bufsize
 	;get old interrupt
 	mov ah, 35h
 	mov al, 0Fh
@@ -141,5 +143,4 @@ Reset:
 	out dx, al
 	
 	mov next_bufpart, offset buffer
-	mov next_sto_bufpart, offset sto_buf
 ENDM

@@ -3,7 +3,7 @@ TITLE space-invader
 .STACK 1024
 .DATA 
 sbbuf db 16384 dup (?)
-stobuf db 32768 dup (?)
+;stobuf db 32768 dup (?)
 h dw 0
 fn db "some.wav$",0
 noOpenS db "noOpen$",0
@@ -16,12 +16,11 @@ INCLUDE sblasdat.asm
 INCLUDE fileio.asm
 INCLUDE stdout.asm
 INCLUDE sblaster.asm
-makeBlasterHandler sbbuf, 16384, stobuf, 32768
+makeBlasterHandler sbbuf, 16384, h
 .STARTUP
 	fileOpenForReading fn, h, noOpen
 	fileSeekStart h, 0, 44, noSeek
-	fileRead h, stobuf, 32768, EOF, noRead
-	fileClose h, noClose
+;	fileRead h, stobuf, 32768, EOF, noRead
 	
 ;	mov cx, 16384
 ;	mov si, offset stobuf
@@ -36,16 +35,17 @@ makeBlasterHandler sbbuf, 16384, stobuf, 32768
 ;	rep stosb
 
 	
-	soundBlasterInit sbbuf, 16384, stobuf
+	soundBlasterInit sbbuf, 16384
 	
 	;int 0Fh
-	in al, 21h
+;	in al, 21h
 	
 
 	xor ah, ah
 	int 16h
 	
-	in al, 21h
+	fileClose h, noClose
+;	in al, 21h
 	jmp term
 noOpen:
 	strOutM noOpenS
