@@ -12,4 +12,4 @@ keybInterruptUninstall ENDP
 
 keybBufferProcess PROC NEAR
 	; some code
-keybBufferProcess
+keybBufferProcess ENDP
