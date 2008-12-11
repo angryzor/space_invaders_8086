@@ -8,6 +8,10 @@ bCommandOutput	= 41h
 makeBlasterHandler MACRO buffer, bufsize, sto_buf, sto_bufsize
 soundBlasterHandler PROC FAR
 ;	strOutM now
+	mov ax, next_bufpart
+	add ax, 5
+	mov next_bufpart, ax
+IF 0
 	mov di, offset buffer
 	mov si, offset sto_buf
 	add di, next_bufpart
@@ -38,6 +42,11 @@ noChangeStoBufPos:
 	mov next_sto_bufpart, si
 ;	mov al, 1
 ;	mov blaster_passed, al
+ENDIF
+	mov dx, wSBCBaseAddr+0Fh
+	in al, dx
+	mov al, 20h
+	out 20h, al
 	iret
 soundBlasterHandler ENDP
 ENDM
@@ -69,6 +78,10 @@ soundBlasterInit MACRO buffer, bufsize
 	and al, 01111111y
 	out 21h, al
 	
+	mov al, 0F3h
+	mov dx, (wSBCBaseAddr + 0Ch)
+	out dx, al
+	
 	cli
 	dmaDisableChannel
 	dmaSetMode cDemandMode + cAddressIncrement + cAutoInitialization + cWriteTransfer + cChannel15
@@ -84,8 +97,31 @@ soundBlasterInit MACRO buffer, bufsize
 	
 	mov al, 1
 	out dx, al
-	sub al, al
 	
+	xor al, al
+delay:
+	dec al
+	jnz delay
+	out dx, al
+	
+	xor cx, cx
+TryContinue:
+	mov dx, wSBCBaseAddr
+	add dx, 0Eh
+	
+	in al, dx
+	or al, al
+	jns NextTry
+	
+	sub dx, 4
+	in al, dx
+	cmp al, 0AAh
+	je Reset
+NextTry:
+	loop TryContinue
+	strOutM now
+Reset:
+
 	
 	; set DSP transfer sampling rate
 	mov dx, wSBCBaseAddr

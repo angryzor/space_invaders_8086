@@ -38,12 +38,14 @@ makeBlasterHandler sbbuf, 16384, stobuf, 32768
 	
 	soundBlasterInit sbbuf, 16384
 	
-;	int 0Fh
+	;int 0Fh
+	in al, 21h
 	
 
 	xor ah, ah
 	int 16h
 	
+	in al, 21h
 	jmp term
 noOpen:
 	strOutM noOpenS
@@ -58,7 +60,7 @@ noClose:
 	strOutM noCloseS
 EOF:
 term:
-.EXIT
+.EXIT 0
 
 
 
