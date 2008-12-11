@@ -11,5 +11,7 @@ keybInterruptUninstall PROC NEAR
 keybInterruptUninstall ENDP
 
 keybBufferProcess PROC NEAR
+	mov bx, offset bKeybInputBuffer
+
 	; some code
 keybBufferProcess ENDP
