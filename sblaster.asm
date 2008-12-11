@@ -7,8 +7,11 @@ bCommandOutput	= 41h
 
 makeBlasterHandler MACRO buffer, bufsize, sto_buf, sto_bufsize
 soundBlasterHandler PROC FAR
-	mov di, next_bufpart
-	mov si, next_sto_bufpart
+;	strOutM now
+	mov di, offset buffer
+	mov si, offset sto_buf
+	add di, next_bufpart
+	add si, next_sto_bufpart
 	mov ax, seg buffer
 	mov es, ax
 	assume es:seg buffer
@@ -41,7 +44,6 @@ ENDM
 	
 
 soundBlasterInit MACRO buffer, bufsize
-
 	;get old interrupt
 	mov ah, 35h
 	mov al, 0Fh
