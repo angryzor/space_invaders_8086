@@ -6,6 +6,7 @@
 strOut PROC NEAR USES AX
 	mov ah, 09h
 	int 21
+	ret
 strOut ENDP
 
 ; macro strOutM

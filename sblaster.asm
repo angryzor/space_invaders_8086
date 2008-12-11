@@ -13,7 +13,7 @@ soundBlasterHandler PROC FAR
 ;	mov next_bufpart, ax
 ;IF 0
 	mov di, next_bufpart
-	add si, next_sto_bufpart
+	mov si, next_sto_bufpart
 	mov ax, seg buffer
 	mov es, ax
 	assume es:seg buffer
@@ -27,7 +27,6 @@ soundBlasterHandler PROC FAR
 	mov ax, @DATA
 	mov ds, ax
 	assume DS:@DATA
-	
 	cmp di, (offset buffer + bufsize)
 	jl short noChangeBufPos
 	mov di, offset buffer
