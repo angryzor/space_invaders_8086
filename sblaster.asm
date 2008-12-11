@@ -13,9 +13,9 @@ soundBlasterHandler PROC FAR USES AX BX CX DX DS
 	mov next_sto_bufpart, ax
 	mov test_1, ax
 
-	mov ah, 02h
-	mov dl, 42h
-	int 21h
+;	mov ah, 02h
+	;mov dl, 42h
+	;int 21h
 
 	mov ah, 03fh				; read command
 	mov bx, h				; file handle
