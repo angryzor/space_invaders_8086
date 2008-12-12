@@ -8,10 +8,10 @@ bCommandOutput	= 41h
 makeBlasterHandler MACRO buffer, bufsize, h
 soundBlasterHandler PROC FAR USES AX BX CX DX DS
 ; have our own read file here. we need speed optimizations
-	mov ax, next_sto_bufpart
-	add ax, 1
-	mov next_sto_bufpart, ax
-	mov test_1, ax
+;	mov ax, next_sto_bufpart
+;	add ax, 1
+;	mov next_sto_bufpart, ax
+;	mov test_1, ax
 
 ;	mov ah, 02h
 	;mov dl, 42h
@@ -26,19 +26,19 @@ soundBlasterHandler PROC FAR USES AX BX CX DX DS
 	mov cx, bufsize/2				; read size
 	int 21h
 	
-	jnc fileReadCleanExit
-	
-	mov dx, @DATA			; reset seg
-	mov ds, dx
-	ASSUME DS:@DATA
-	jmp exitISR				; can't open file. terminate
-fileReadCleanExit:
+;	jnc fileReadCleanExit
+;	
+;	mov dx, @DATA			; reset seg
+;	mov ds, dx
+;	ASSUME DS:@DATA
+;	jmp exitISR				; can't open file. terminate
+;fileReadCleanExit:
 	mov dx, @DATA			; reset seg
 	mov ds, dx
 	ASSUME DS:@DATA
 	
 	cmp ax, cx				; check for eof
-	je exitISR
+	je short exitISR
 EOF:
 	fileSeekStart h, 0, 0, exitISR
 	

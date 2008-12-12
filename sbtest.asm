@@ -2,8 +2,8 @@
 TITLE space-invader
 .STACK 1024
 .DATA 
-sbbuf db 16384 dup (?)
-;stobuf db 32768 dup (?)
+cBufSize = 22050
+sbbuf db cBufSize dup (?)
 h dw 0
 fn db "some.wav$",0
 noOpenS db "noOpen$",0
@@ -16,26 +16,13 @@ INCLUDE sblasdat.asm
 INCLUDE fileio.asm
 INCLUDE stdout.asm
 INCLUDE sblaster.asm
-makeBlasterHandler sbbuf, 16384, h
+makeBlasterHandler sbbuf, cBufSize, h
 .STARTUP
 	fileOpenForReading fn, h, noOpen
 	fileSeekStart h, 0, 44, noSeek
 ;	fileRead h, stobuf, 32768, EOF, noRead
 	
-;	mov cx, 16384
-;	mov si, offset stobuf
-;	mov ax, seg sbbuf
-;	mov es, ax
-;	mov di, offset sbbuf
-;	rep movsb
-;	
-;	mov ax, 0
-;	mov di, offset stobuf
-;	mov cx, 32768
-;	rep stosb
-
-	
-	soundBlasterInit sbbuf, 16384
+	soundBlasterInit sbbuf, cBufSize
 	
 	;int 0Fh
 ;	in al, 21h
