@@ -2,7 +2,7 @@
 TITLE space-invader
 .STACK 1024
 .DATA 
-cBufSize = 22050
+cBufSize = 2048
 sbbuf db cBufSize dup (?)
 h dw 0
 fn db "some.wav$",0

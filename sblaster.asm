@@ -33,8 +33,8 @@ soundBlasterHandler PROC FAR USES AX BX CX DX DS
 ;	ASSUME DS:@DATA
 ;	jmp exitISR				; can't open file. terminate
 ;fileReadCleanExit:
-	mov dx, @DATA			; reset seg
-	mov ds, dx
+	mov bx, @DATA			; reset seg
+	mov ds, bx
 	ASSUME DS:@DATA
 	
 	cmp ax, cx				; check for eof
