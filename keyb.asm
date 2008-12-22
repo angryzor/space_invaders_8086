@@ -1,5 +1,3 @@
-;Dit is data. Niet zeker dat het in deze file moet!
-OldIntHandler dd ?
 
 keybInterruptHandler PROC FAR
 	;some code
