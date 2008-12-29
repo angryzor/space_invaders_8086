@@ -34,9 +34,76 @@ keybInterruptUninstall PROC NEAR uses bp ax dx ds
 keybInterruptUninstall ENDP
 
 keybBufferProcess PROC NEAR
-	mov bx, offset bKeybInputBuffer
-	mov dl, bKeybInputBufferLoBound
-	mov dh, bKeybInputBufferHiBound
+	mov cl, bKeybInputBufferLoBound ; The circular buffer's lower bound
+	mov ch, bKeybInputBufferHiBound ; The circular buffer's high bound
 
-	; some code
+a_loop:
+checkEmpty:
+	cmp cl, ch				; See if cl == ch and stop if true
+	jz keybProcessExit		;
+	
+processThis:
+	mov bx, offset bKeybInputBuffer		; set base
+	mov ax, [bx+cl]						; move from correct index
+	
+	checkArrowKey:
+		cmp ax, cKeyArrowDown				; check if arrow key indicator
+		jnz short continue
+		
+		mov byte ptr bKeybNextIsArrow, 1	; in that case, set this and move up
+		jmp continue_loop
+	
+		continue:
+			mov dx, byte ptr bKeybNextIsArrow	; check if "next is arrow" flag is set
+			cmp dx, 1
+			jz processArrowKey
+			cmp ax, cKeySpaceDown
+			jz labelKeySpaceDown
+			cmp ax, cKeyLeftUp
+			jz labelKeyLeftUp
+			cmp ax, cKeyRightUp
+			jz labelKeyRightUp
+			cmp ax, cKeySpaceUp
+			jz labelKeySpaceUp
+			jmp labelError		; should never happen
+
+		
+
+		processArrowKey:
+			mov byte ptr bKeybNextIsArrow, 0  ; reset arrow flag
+			cmp ax, cKeyLeftDown
+			jz labelKeyLeftDown
+			cmp ax, cKeyRightDown
+			jz labelKeyRightDown
+			jmp labelError		; should never happen
+			
+continue_loop:
+	inc cl
+	jmp a_loop
+	
+labelKeyLeftDown:
+	call procKeyLeftDown
+	jmp continue_loop
+labelKeyRightDown:
+	call procKeyRightDown
+	jmp continue_loop
+labelKeySpaceDown:
+	call procKeySpaceDown
+	jmp continue_loop
+labelKeyLeftUp:
+	call procKeyLeftUp
+	jmp continue_loop
+labelKeyRightUp:
+	call procKeyRightUp
+	jmp continue_loop
+labelKeySpaceUp:
+	call procKeySpaceUp
+	jmp continue_loop
+labelError:
+	jmp continue_loop		; ignore errors for now
+	
+keybProcessExit:
+	mov bKeybInputBufferLoBound, cl ; Store the circular buffer's lower bound
+	mov bKeybInputBufferHiBound, ch ; Store the circular buffer's high bound
+	ret
 keybBufferProcess ENDP
