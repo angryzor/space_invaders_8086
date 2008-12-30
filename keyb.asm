@@ -1,7 +1,75 @@
 
-keybInterruptHandler PROC FAR
-	;some code
-keybInterruptHandler ENDP
+SetCmd proc near uses cx al
+		push ax 	;Save command value.
+        cli         ;Critical region, no ints now. (Clear Interrupt Flag)
+
+; Wait until the 8042 is done processing the current command.
+
+        xor cx, cx      ;Allow 65,536 times thru loop.
+Wait4Empty: in  al, 64h     ;Read keyboard status register.
+        test    al, 10b     ;Input buffer full? (Input Buffer Status (1= full, 0 = empty))
+        loopnz  Wait4Empty  ;If so, wait until empty.
+; Okay, send the command :
+        pop ax      ;Retrieve command.
+        out 64h, al
+        sti         ;Okay, ints can happen again. (Set Interrupt Flag)
+        ret
+SetCmd      endp
+
+keybinterrupthandler proc far uses ds ax bx cx al ah cl ch
+        mov ax,@data
+        mov ds,ax
+        
+        mov al, 0ADh        ;Disable keyboard
+        call SetCmd
+        cli                 ;Disable interrupts. interrupts reenabled when flags are popped
+        xor cx, cx
+Wait4Data:  in  al, 64h     ;Read kbd status port.
+        test    al, 10b     ;Data in buffer? (Input Buffer Status (1= full, 0 = empty))
+        loopz   Wait4Data   ;Wait until data available.
+        in  al, 60h         ;Get keyboard data.
+        
+        if debug
+        xor ah,ah
+        push ax
+        call printint
+        printcrlf
+        endif
+        
+        cmp al, 0EEh        ;Echo response?
+        je  QuitInt9
+        cmp al, 0FAh        ;Acknowledge?
+        jne NotAck
+        or  KbdFlags4, 10h  ;Set ack bit.
+        jmp QuitInt9
+
+NotAck: cmp al, 0FEh        ;Resend command?
+        jne NotResend       
+        or  KbdFlags4, 20h  ;Set resend bit.
+        jmp QuitInt9
+
+NotResend: 
+        ;if buffer not full, write scan code in dl to buffer 
+        mov cl,keybbufback
+        inc cl
+        cmp cl,keybbuffront
+        jz QuitInt9
+        ;ok buffer not full, insert al and increment keybbufback
+        mov bx,offset keybbuf
+        mov cl,keybbufback
+        xor ch,ch
+        add bx,cx
+        mov byte ptr [bx],al
+        inc keybbufback
+bufferfull:                 ;Put in type ahead buffer.
+QuitInt9:   
+        mov al, 0AEh        ;Reenable the keyboard
+        call SetCmd
+
+        mov al, 20h         ;Send EOI (end of interrupt)
+        out 20h, al         ; to the 8259A PIC.
+        iret
+keybinterrupthandler endp
 
 keybInterruptInstall PROC NEAR uses bp ax bx dx es ds
     mov bp,sp
