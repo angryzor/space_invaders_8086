@@ -16,7 +16,7 @@ Wait4Empty: in  al, 64h     ;Read keyboard status register.
         ret
 SetCmd      endp
 
-keybinterrupthandler proc far uses ds ax bx cx ; al ah cl ch ;COMMENTED OUT BY: angryzor; REASON: AX consists of AL and AH, CX consists of CL and CH
+KeybInterruptHandler proc far uses ds ax bx cx ; al ah cl ch ;COMMENTED OUT BY: angryzor; REASON: AX consists of AL and AH, CX consists of CL and CH
         mov ax,@data
         mov ds,ax
         
@@ -50,17 +50,17 @@ NotAck: cmp al, 0FEh        ;Resend command?
 
 NotResend: 
         ;if buffer not full, write scan code in dl to buffer 
-        mov cl,keybbufback
+        mov cl,bKeybInputBufferHiBound
         inc cl
-        cmp cl,keybbuffront
+        cmp cl,bKeybInputBufferLoBound
         jz QuitInt9
         ;ok buffer not full, insert al and increment keybbufback
-        mov bx,offset keybbuf
-        mov cl,keybbufback
+        mov bx,offset bKeybInputBuffer
+        mov cl,bKeybInputBufferHiBound
         xor ch,ch
         add bx,cx
         mov byte ptr [bx],al
-        inc keybbufback
+        inc bKeybInputBufferHiBound
 bufferfull:                 ;Put in type ahead buffer.
 QuitInt9:   
         mov al, 0AEh        ;Reenable the keyboard
@@ -69,7 +69,7 @@ QuitInt9:
         mov al, 20h         ;Send EOI (end of interrupt)
         out 20h, al         ; to the 8259A PIC.
         iret
-keybinterrupthandler endp
+KeybInterruptHandler endp
 
 keybInterruptInstall PROC NEAR uses bp ax bx dx es ds
 ;	mov bp,sp			;COMMENTED OUT BY: angryzor; REASON: unnecessary, no stack passed arguments used
