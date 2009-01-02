@@ -72,7 +72,7 @@ QuitInt9:
 keybinterrupthandler endp
 
 keybInterruptInstall PROC NEAR uses bp ax bx dx es ds
-    mov bp,sp
+;	mov bp,sp			;COMMENTED OUT BY: angryzor; REASON: unnecessary, no stack passed arguments used
     ;Saving old interrupt handler
     mov ah,35h ;Dos function 35h
     mov al,09h ;Interrupt source = 9 = Keyboard
@@ -90,7 +90,7 @@ keybInterruptInstall PROC NEAR uses bp ax bx dx es ds
 keybInterruptInstall ENDP
 
 keybInterruptUninstall PROC NEAR uses bp ax dx ds
-	mov bp,sp
+;	mov bp,sp			;COMMENTED OUT BY: angryzor; REASON: unnecessary, no stack passed arguments used
     ;Reset old handler
     mov dx,word ptr OldIntHandler
     mov ax,word ptr OldhIntHandler+2
@@ -101,7 +101,7 @@ keybInterruptUninstall PROC NEAR uses bp ax dx ds
     ret
 keybInterruptUninstall ENDP
 
-keybBufferProcess PROC NEAR
+keybBufferProcess PROC NEAR USES AX BX CX DX
 	mov cl, bKeybInputBufferLoBound ; The circular buffer's lower bound
 	mov ch, bKeybInputBufferHiBound ; The circular buffer's high bound
 
