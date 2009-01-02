@@ -16,7 +16,7 @@ Wait4Empty: in  al, 64h     ;Read keyboard status register.
         ret
 SetCmd      endp
 
-keybinterrupthandler proc far uses ds ax bx cx al ah cl ch
+keybinterrupthandler proc far uses ds ax bx cx ; al ah cl ch ;COMMENTED OUT BY: angryzor; REASON: AX consists of AL and AH, CX consists of CL and CH
         mov ax,@data
         mov ds,ax
         
@@ -29,12 +29,12 @@ Wait4Data:  in  al, 64h     ;Read kbd status port.
         loopz   Wait4Data   ;Wait until data available.
         in  al, 60h         ;Get keyboard data.
         
-        if debug
-        xor ah,ah
-        push ax
-        call printint
-        printcrlf
-        endif
+;        if debug			; COMMENTED OUT BY: angryzor; REASON: completely unnecessary, we don't even have a printint/crlf function -_-'
+;        xor ah,ah
+;        push ax
+;        call printint
+;        printcrlf
+;        endif
         
         cmp al, 0EEh        ;Echo response?
         je  QuitInt9
@@ -124,7 +124,7 @@ processThis:
 		continue:
 			mov dx, byte ptr bKeybNextIsArrow	; check if "next is arrow" flag is set
 			cmp dx, 1
-			jz processArrowKey
+			jz short processArrowKey
 			cmp ax, cKeySpaceDown
 			jz labelKeySpaceDown
 			cmp ax, cKeyLeftUp
