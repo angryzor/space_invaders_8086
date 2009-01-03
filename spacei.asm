@@ -7,6 +7,31 @@ INCLUDE DATA.asm
 .CODE
 INCLUDE graphics.asm
 INCLUDE graphhlp.asm
+INCLUDE keyb.asm
+procKeyLeftDown PROC
+	graphicsDrawSpriteM bSpaceShip, 200, 100
+	ret
+procKeyLeftDown ENDP
+procKeyRightDown PROC
+	graphicsDrawSpriteM bSpaceShip, 200, 100
+	ret
+procKeyRightDown ENDP
+procKeyLeftUp PROC
+	graphicsDrawSpriteM bSpaceShip, 200, 100
+	ret
+procKeyLeftUp ENDP
+procKeyRightUp PROC
+	graphicsDrawSpriteM bSpaceShip, 200, 100
+	ret
+procKeyRightUp ENDP
+procKeySpaceUp PROC USES SI BX DX
+	graphicsDrawSpriteM bSpaceShip, 10, 10
+	ret
+procKeySpaceUp ENDP
+procKeySpaceDown PROC USES SI BX DX
+	graphicsDrawSpriteM bSpaceShip, 10, 10
+	ret
+procKeySpaceDown ENDP
 .STARTUP
 	call displayVgaMode
 	displayHelpersFillGrayScalePalette bScratchPalette
@@ -23,13 +48,16 @@ INCLUDE graphhlp.asm
 	graphicsDrawSpriteM bSpaceShip, 160, 100
 	call displayUpdateVram
 
-	xor ah, ah
-	int 16h
+	call keybInterruptInstall
+;	xor ah, ah
+;	int 16h
+aloop:
+	call keybBufferProcess
+	call displayUpdateVram
+	jmp aloop
+exitGame:
+	call keybInterruptUninstall
 	
 	call displaySetOldMode
 .EXIT
-
-
-
-
 END

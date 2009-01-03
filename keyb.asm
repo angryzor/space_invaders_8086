@@ -1,5 +1,6 @@
+INCLUDE keycodes.asm
 
-SetCmd proc near uses cx al
+SetCmd proc near uses cx ax
 		push ax 	;Save command value.
         cli         ;Critical region, no ints now. (Clear Interrupt Flag)
 
@@ -16,7 +17,7 @@ Wait4Empty: in  al, 64h     ;Read keyboard status register.
         ret
 SetCmd      endp
 
-KeybInterruptHandler proc far uses ds ax bx cx ; al ah cl ch ;COMMENTED OUT BY: angryzor; REASON: AX consists of AL and AH, CX consists of CL and CH
+keybInterruptHandler proc far uses ds ax bx cx ; al ah cl ch ;COMMENTED OUT BY: angryzor; REASON: AX consists of AL and AH, CX consists of CL and CH
         mov ax,@data
         mov ds,ax
         
@@ -65,13 +66,12 @@ bufferfull:                 ;Put in type ahead buffer.
 QuitInt9:   
         mov al, 0AEh        ;Reenable the keyboard
         call SetCmd
-
         mov al, 20h         ;Send EOI (end of interrupt)
         out 20h, al         ; to the 8259A PIC.
         iret
-KeybInterruptHandler endp
+keybInterruptHandler endp
 
-keybInterruptInstall PROC NEAR uses bp ax bx dx es ds
+keybInterruptInstall PROC NEAR uses ax bx dx es ds
 ;	mov bp,sp			;COMMENTED OUT BY: angryzor; REASON: unnecessary, no stack passed arguments used
     ;Saving old interrupt handler
     mov ah,35h ;Dos function 35h
@@ -80,20 +80,20 @@ keybInterruptInstall PROC NEAR uses bp ax bx dx es ds
     mov word ptr OldIntHandler,bx
     mov word ptr OldIntHandler+2,es
     ;Set new interrupt handler
-    mov dx,seg KeybInterruptHandler
+    mov dx,seg keybInterruptHandler
     mov ds,dx
-    mov dx,KeybInterruptHandler
+    mov dx,keybInterruptHandler
     mov ah,25h ;Dos function 25h
     mov al,09h ;Source 9 = Keyboard
     int 21h
     ret
 keybInterruptInstall ENDP
 
-keybInterruptUninstall PROC NEAR uses bp ax dx ds
+keybInterruptUninstall PROC NEAR uses ax dx ds
 ;	mov bp,sp			;COMMENTED OUT BY: angryzor; REASON: unnecessary, no stack passed arguments used
     ;Reset old handler
     mov dx,word ptr OldIntHandler
-    mov ax,word ptr OldhIntHandler+2
+    mov ax,word ptr OldIntHandler+2
     mov ds,ax
     mov ah,25h ;Dos function 25h
     mov al,09h ;Keyboard
@@ -112,7 +112,11 @@ checkEmpty:
 	
 processThis:
 	mov bx, offset bKeybInputBuffer		; set base
-	mov ax, [bx+cl]						; move from correct index
+	xor dx, dx
+	mov dl, cl
+	add bx, dx
+	xor ax, ax
+	mov al, [bx]						; move from correct index
 	
 	checkArrowKey:
 		cmp ax, cKeyArrowDown				; check if arrow key indicator
@@ -122,7 +126,8 @@ processThis:
 		jmp continue_loop
 	
 		continue:
-			mov dx, byte ptr bKeybNextIsArrow	; check if "next is arrow" flag is set
+			xor dh, dh
+			mov dl, byte ptr bKeybNextIsArrow	; check if "next is arrow" flag is set
 			cmp dx, 1
 			jz short processArrowKey
 			cmp ax, cKeySpaceDown
@@ -133,6 +138,8 @@ processThis:
 			jz labelKeyRightUp
 			cmp ax, cKeySpaceUp
 			jz labelKeySpaceUp
+			cmp ax, cKeyXUp
+			jz exitGame
 			jmp labelError		; should never happen
 
 		
@@ -172,6 +179,6 @@ labelError:
 	
 keybProcessExit:
 	mov bKeybInputBufferLoBound, cl ; Store the circular buffer's lower bound
-	mov bKeybInputBufferHiBound, ch ; Store the circular buffer's high bound
+;	mov bKeybInputBufferHiBound, ch ; Store the circular buffer's high bound
 	ret
 keybBufferProcess ENDP

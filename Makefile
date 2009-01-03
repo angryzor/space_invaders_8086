@@ -4,7 +4,9 @@ MAIN=spacei.asm
 ASMSOURCES=DATA.asm dmactrlr.asm fileio.asm gdata.asm graphhlp.asm graphics.asm keycodes.asm sprites.asm stdout.asm $(SBLIBSOURCES) $(MAIN)
 
 
-all: debug
+all: spacei.exe
+
+spacei.exe: debug
 	
 debug: $(ASMSOURCES)
 	@ml /W3 /Zi /nologo $(MAIN)
@@ -24,5 +26,5 @@ sb: $(SBLIBSOURCES) $(SBTESTMAIN)
 list: $(ASMSOURCES)
 	@ml /W3 /Fl /Zi /nologo $(MAIN)
 	
-check: debug
+check: spacei.exe
 	@spacei.exe
