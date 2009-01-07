@@ -61,6 +61,7 @@ ENDM
 	
 
 soundBlasterInit MACRO buffer, bufsize
+	mov next_bufpart, offset buffer
 	;get old interrupt
 	mov ah, 35h
 	mov al, 0Fh
@@ -136,7 +137,7 @@ Reset:
 	add dx, 0Ch
 	mov al, bCommandOutput
 	out dx, al
-	mov al, 0ACh		; 44100 Hz    D:
+	mov al, 0ACh		; 44100 Hz    D: (= 0AC44h)
 	out dx, al
 	mov al, 44h
 	out dx, al
@@ -151,5 +152,4 @@ Reset:
 	xchg al, ah
 	out dx, al
 	
-	mov next_bufpart, offset buffer
 ENDM
