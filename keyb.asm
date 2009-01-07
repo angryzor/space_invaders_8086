@@ -1,5 +1,55 @@
 INCLUDE keycodes.asm
 
+
+SendCmd     proc    near
+        push    ds
+        push    bx
+        push    cx
+        mov bx, ax      ;Save data byte
+
+        mov bh, 3       ;Retry cnt.
+RetryLp:    cli         ;Disable ints while accessing HW.
+
+; Clear the Error, Acknowledge received, and resend received flags
+; in KbdFlags4
+
+        and KbdFlags4, 4fh
+
+; Wait until the 8042 is done processing the current command.
+
+        xor cx, cx          ;Allow 65,536 times thru loop.
+Wait4Empty: in  al, 64h         ;Read keyboard status register.
+        test    al, 10b         ;Input buffer full?
+        loopnz  Wait4Empty      ;If so, wait until empty.
+
+; Okay, send the data to port 60h
+
+        mov al, bl
+        out 60h, al
+        sti             ;Allow interrupts now.
+
+; Wait for the arrival of an acknowledgement from the keyboard ISR:
+
+        xor cx, cx          ;Wait a long time, if need be.
+Wait4Ack:   
+        test KbdFlags4, 10h  ;Acknowledge received bit.
+        jnz GotAck
+        loop Wait4Ack
+        dec bh          ;Do a retry on this guy.
+        jne RetryLp
+
+; If the operation failed after 3 retries, set the error bit and quit.
+
+        or  KbdFlags4, 80h  ;Set error bit.
+GotAck:     
+        pop cx
+        pop bx
+        pop ds
+        ret
+SendCmd endp
+
+
+
 SetCmd proc near uses cx ax
 		push ax 	;Save command value.
         cli         ;Critical region, no ints now. (Clear Interrupt Flag)
@@ -132,10 +182,6 @@ processThis:
 			jz short processArrowKey
 			cmp ax, cKeySpaceDown
 			jz labelKeySpaceDown
-			cmp ax, cKeyLeftUp
-			jz labelKeyLeftUp
-			cmp ax, cKeyRightUp
-			jz labelKeyRightUp
 			cmp ax, cKeySpaceUp
 			jz labelKeySpaceUp
 			cmp ax, cKeyXUp
@@ -150,6 +196,10 @@ processThis:
 			jz labelKeyLeftDown
 			cmp ax, cKeyRightDown
 			jz labelKeyRightDown
+			cmp ax, cKeyLeftUp
+			jz labelKeyLeftUp
+			cmp ax, cKeyRightUp
+			jz labelKeyRightUp
 			jmp labelError		; should never happen
 			
 continue_loop:
@@ -157,22 +207,22 @@ continue_loop:
 	jmp a_loop
 	
 labelKeyLeftDown:
-	call procKeyLeftDown
+	procKeyLeftDown
 	jmp continue_loop
 labelKeyRightDown:
-	call procKeyRightDown
+	procKeyRightDown
 	jmp continue_loop
 labelKeySpaceDown:
-	call procKeySpaceDown
+	procKeySpaceDown
 	jmp continue_loop
 labelKeyLeftUp:
-	call procKeyLeftUp
+	procKeyLeftUp
 	jmp continue_loop
 labelKeyRightUp:
-	call procKeyRightUp
+	procKeyRightUp
 	jmp continue_loop
 labelKeySpaceUp:
-	call procKeySpaceUp
+	procKeySpaceUp
 	jmp continue_loop
 labelError:
 	jmp continue_loop		; ignore errors for now
