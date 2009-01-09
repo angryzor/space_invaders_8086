@@ -5,6 +5,21 @@ wSBCBaseAddr = 220h
 bCommandInput	= 42h
 bCommandOutput	= 41h
 
+print macro character
+    mov ah,02h
+    mov dl,character
+    int 21h
+endm
+
+printcrlf macro
+    mov ah,02h
+    mov dl,0Ah
+    int 21h
+    mov ah,02h
+    mov dl,0Dh
+    int 21h
+endm
+
 makeBlasterHandler MACRO buffer, bufsize, h
 soundBlasterHandler PROC FAR USES AX BX CX DX DS
 ; have our own read file here. we need speed optimizations
@@ -47,7 +62,7 @@ exitISR:
 	add dx, bufsize/2
 	cmp dx, (offset buffer + bufsize)
 	
-	jl EOIs
+	jb EOIs
 	mov dx, offset buffer
 EOIs:
 	mov next_bufpart, dx

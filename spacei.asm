@@ -26,11 +26,6 @@ procKeySpaceUp MACRO
 	mov bIsSpaceDown, 0
 ENDM
 INCLUDE keyb.asm
-print macro character
-    mov ah,02h
-    mov dl,character
-    int 21h
-endm
 checkKeys MACRO
 	mov bx, shipX
 	mov al, bIsLeftDown
@@ -48,41 +43,51 @@ ENDM
 
 INCLUDE monstmov.asm
 INCLUDE collisn.asm
+
+monstersUpdateDisplay PROC USES SI BX CX
+	mov ax, seg wwEnemyPositions
+	mov es, ax
+	mov di, offset wwEnemyPositions
+	mov bx, offset wEnemySpriteAddresses
+	
+	mov cx, cNumMonsters
+doloop:
+	push bx
+	graphicsDrawSpriteMA [bx], [di], [di+2]
+	pop bx
+	add di, 4
+	add bx, 2
+	loop doloop
+	ret
+monstersUpdateDisplay ENDP
+
+
+
+
 .STARTUP
 	call displayVgaMode
 	displayHelpersFillGrayScalePalette bScratchPalette
 	displaySetPaletteM bScratchPalette
-	call displayClearScreen
-	call graphicsDrawTest
-;	graphicsDrawSpriteM bMonster1, 140, 100
-;	graphicsDrawSpriteM bMonster1, 140, 120
-;	graphicsDrawSpriteM bMonster1, 140, 140
-;	graphicsDrawSpriteM bMonster1, 140, 160
-;	graphicsDrawSpriteM bMonster1, 140, 180
-;	graphicsDrawSpriteM bMonster1, 140, 80
-;	graphicsDrawSpriteM bMonster1, 140, 60
-;	graphicsDrawSpriteM bSpaceShip, 160, 100
-	call displayUpdateVram
+;	call displayClearScreen
+;	call graphicsDrawTest
+;	call displayUpdateVram
 
-;	mov al, 0F3h
-;	call SendCmd
-;	test KbdFlags4, 80h
-;	jnz exitGame
-;	mov al, 01111111y
-;	call SendCmd
 	call keybInterruptInstall
 	mov al, 0F9h
 	call SendCmd
 	test KbdFlags4, 80h
 	jnz exitGame
+	
 ;	xor ah, ah
 ;	int 16h
 aloop:
 	call keybBufferProcess
 	checkKeys
+	call updateMonsterPositions
 	call displayClearScreen
-	call graphicsDrawTest
+;	call graphicsDrawTest
 	graphicsDrawSpriteM bSpaceShip, shipX, 150
+	call monstersUpdateDisplay
 	call displayUpdateVram
 	jmp aloop
 exitGame:

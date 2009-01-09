@@ -18,17 +18,17 @@ collCheckHit PROC NEAR USES AX
 ;	([BX+1] >= ([DI+1] + [SI+1])) &&
 ;	([BX] >= ([DI] + [SI]))
 	  
-	mov ax, [BX+1]
+	mov ax, [BX+2]
 	add ax, 4
-	cmp ax, [DI+1]
+	cmp ax, [DI+2]
 	jl noCollision
 	mov ax, [BX+2]
 	add ax, 2
 	cmp ax, [DI]
 	jl noCollision
-	mov ax, [DI+1]
-	add ax, [SI+1]
-	cmp [BX+1], ax
+	mov ax, [DI+2]
+	add ax, [SI+2]
+	cmp [BX+2], ax
 	jl noCollision
 	mov ax, [DI]
 	add ax, [SI]

@@ -1,36 +1,35 @@
 
 
 ;var
-bIncValue db 1
+cMinPos = 15
+cMaxPos = 75
 	
 updateMonsterPositions PROC NEAR USES SI dx cx ax
 
 	mov ax, seg wwEnemyPositions
 	mov es, ax
 	mov SI, offset wwEnemyPositions
-	mov dh, byte ptr bIncValue
-	mov cl, 8
-	sar dx, cl
-	mov cx, 20                     ; nr of monsters
+	mov dx, bIncValue
+	mov cx, cNumMonsters                     ; nr of monsters
 moveAll:
 	mov ax, [SI]
 	add ax,dx
-	add SI, 4 		;we use words and y doesn't need to be adjusted
 	mov [SI], ax
+	add SI, 4 		;we use words and y doesn't need to be adjusted
 	loop moveAll
 movement:
 	mov SI, offset wwEnemyPositions
 	mov ax, [SI]
-	cmp ax, 40
-	je endScreen
-	cmp ax, 0
-	je endScreen
+	cmp ax, cMaxPos
+	jge endScreen
+	cmp ax, cMinPos
+	jle endScreen
 	jmp positionsUpdated
 	
 	
 endScreen:	
 	neg dx
-	mov bIncValue, dl
+	mov bIncValue, dx
 positionsUpdated:
 	ret
 	
