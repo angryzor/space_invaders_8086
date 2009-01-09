@@ -16,6 +16,12 @@ INCLUDE sblasdat.asm
 INCLUDE fileio.asm
 INCLUDE stdout.asm
 INCLUDE sblaster.asm
+
+
+cDoDisplayVolume = 1
+
+
+
 print macro character
     mov ah,02h
     mov dl,character
@@ -41,46 +47,47 @@ makeBlasterHandler sbbuf, cBufSize, h
 	;int 0Fh
 ;	in al, 21h
 	
-;loopb:
-;	mov ax, seg sbbuf
-;	mov es, ax
-;	mov si, offset sbbuf
-;	
-;	xor ax, ax
-;	mov cx, 5511
-;loopa:
-;	mov bx, [si]
-;	cmp bx, 0
-;	jns short noneg
-;	neg bx
-;noneg:
-;	sar ax, 1
-;	sar bx, 1
-;	add ax, bx
-;	add si, 4
-;	loop loopa
-;	
-;	mov cl, 9
-;	sar ax, cl
-;	
-;	mov cx, ax
-;	cmp cx, 0
-;	jz crlf
-;
-;loopc:
-;	print 'H'
-;	loop loopc
-;crlf:
-;	printcrlf
-;	jmp loopb
+IF cDoDisplayVolume
+loopb:
+	mov ax, seg sbbuf
+	mov es, ax
+	mov si, offset sbbuf
+	
+	xor ax, ax
+	mov cx, 5511
+loopa:
+	mov bx, [si]
+	cmp bx, 0
+	jns short noneg
+	neg bx
+noneg:
+	sar ax, 1
+	sar bx, 1
+	add ax, bx
+	add si, 4
+	loop loopa
+	
+	mov cl, 9
+	sar ax, cl
+	
+	mov cx, ax
+	cmp cx, 0
+	jz crlf
 
+loopc:
+	print 'H'
+	loop loopc
+crlf:
+	printcrlf
+	jmp loopb
+ELSE
 	xor ah, ah
 	int 16h
-	
+ENDIF
+
 	soundBlasterRelease
 	
 	fileClose h, noClose
-;	in al, 21h
 	jmp term
 noOpen:
 	strOutM noOpenS
