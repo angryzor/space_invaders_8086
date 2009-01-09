@@ -26,7 +26,11 @@ procKeySpaceUp MACRO
 	mov bIsSpaceDown, 0
 ENDM
 INCLUDE keyb.asm
-
+print macro character
+    mov ah,02h
+    mov dl,character
+    int 21h
+endm
 checkKeys MACRO
 	mov bx, shipX
 	mov al, bIsLeftDown
@@ -62,17 +66,22 @@ INCLUDE collisn.asm
 
 ;	mov al, 0F3h
 ;	call SendCmd
+;	test KbdFlags4, 80h
+;	jnz exitGame
 ;	mov al, 01111111y
 ;	call SendCmd
+	call keybInterruptInstall
 	mov al, 0F9h
 	call SendCmd
-	call keybInterruptInstall
+	test KbdFlags4, 80h
+	jnz exitGame
 ;	xor ah, ah
 ;	int 16h
 aloop:
 	call keybBufferProcess
 	checkKeys
 	call displayClearScreen
+	call graphicsDrawTest
 	graphicsDrawSpriteM bSpaceShip, shipX, 150
 	call displayUpdateVram
 	jmp aloop

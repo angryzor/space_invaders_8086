@@ -31,6 +31,8 @@ makeBlasterHandler sbbuf, cBufSize, h
 	xor ah, ah
 	int 16h
 	
+	soundBlasterRelease
+	
 	fileClose h, noClose
 ;	in al, 21h
 	jmp term

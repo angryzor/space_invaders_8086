@@ -153,3 +153,28 @@ Reset:
 	out dx, al
 	
 ENDM
+
+
+soundBlasterRelease MACRO
+	mov dx, wSBCBaseAddr + 0Ch
+	mov al, 0D9h
+	out dx, al
+	
+	cli
+	dmaDisableChannel
+
+	; disable IRQ7
+	in al, 21h
+	or al, 10000000y
+	out 21h, al
+	sti
+
+	mov ah, 25h
+	mov al, 0Fh
+	mov bx, old_IRQ7_seg
+	mov dx, old_IRQ7_off
+	mov ds, bx
+	int 21h
+	mov bx, @DATA
+	mov ds, bx
+ENDM

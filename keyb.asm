@@ -19,7 +19,7 @@ RetryLp:    cli         ;Disable ints while accessing HW.
 
         xor cx, cx          ;Allow 65,536 times thru loop.
 Wait4Empty: in  al, 64h         ;Read keyboard status register.
-        test    al, 10b         ;Input buffer full?
+        test    al, 1b         ;output buffer full?
         loopnz  Wait4Empty      ;If so, wait until empty.
 
 ; Okay, send the data to port 60h
