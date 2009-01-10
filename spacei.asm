@@ -31,13 +31,19 @@ checkKeys MACRO
 	mov al, bIsLeftDown
 	cmp al, 0
 	jz leftIsNotDown
+	cmp bx, 0
+	jz shipOnLeftBorder
 	sub bx, 2
 leftIsNotDown:
+shipOnLeftBorder:
 	mov al, bIsRightDown
 	cmp al, 0
 	jz rightIsNotDown
+	cmp bx, cScrWidth-16
+	jz shipOnRightBorder
 	add bx, 2
 rightIsNotDown:
+shipOnRightBorder:
 	mov shipX, bx
 ENDM
 
@@ -73,6 +79,8 @@ monstersUpdateDisplay ENDP
 ;	call displayUpdateVram
 
 	call keybInterruptInstall
+	
+	; this code normally disables typematic (for extra speed). However... DOSBox doesn't process it (i checked the DOSBox source). Just leaving it in anyway.
 	mov al, 0F9h
 	call SendCmd
 	test KbdFlags4, 80h
@@ -85,10 +93,13 @@ aloop:
 	checkKeys
 	call updateMonsterPositions
 	call displayClearScreen
+	displayHelpersDebugDrawHorizontalLine bBufLen, 0
 ;	call graphicsDrawTest
 	graphicsDrawSpriteM bSpaceShip, shipX, 150
 	call monstersUpdateDisplay
 	call displayUpdateVram
+;	cmp bError, 4
+;	ja exitGame
 	jmp aloop
 exitGame:
 	call keybInterruptUninstall

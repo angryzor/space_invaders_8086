@@ -25,3 +25,22 @@ fillGSLoop:
 	inc al						; increment AL
 	loop fillGSLoop 			; loop
 ENDM
+
+displayHelpersDebugDrawHorizontalLine MACRO llength, yline
+	mov ax, seg videobuf		; set video buf segment
+	mov es, ax
+	ASSUME ES:SEG videobuf
+
+	mov di, offset videobuf		; set videobuf offset
+	
+	mov bx, yline
+	mov ax, cScrWidth
+	mul bx
+	add di, ax
+
+	mov ax, 03fh
+	xor cx, cx
+	mov cl, llength
+	cld
+	rep stosb
+ENDM

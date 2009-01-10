@@ -56,36 +56,32 @@ SetCmd proc near uses cx ax
 
 ; Wait until the 8042 is done processing the current command.
 
-        xor cx, cx      ;Allow 65,536 times thru loop.
-Wait4Empty: in  al, 64h     ;Read keyboard status register.
-        test    al, 10b     ;Input buffer full? (Input Buffer Status (1= full, 0 = empty))
-        loopnz  Wait4Empty  ;If so, wait until empty.
+; This code goes haywire on DOSBox. DOSBox seems to never set the output buffer status to 1
+;        xor cx, cx      ;Allow 65,536 times thru loop.
+;Wait4Empty: in  al, 64h     ;Read keyboard status register.
+;        test    al, 1b     ;output buffer full? (output Buffer Status (1= full, 0 = empty))
+;        loopnz  Wait4Empty  ;If so, wait until empty.
 ; Okay, send the command :
         pop ax      ;Retrieve command.
         out 64h, al
-        sti         ;Okay, ints can happen again. (Set Interrupt Flag)
+;        sti         ;Okay, ints can happen again. (Set Interrupt Flag) ---- angryzor: WTF Art of Assembly bug. If you set them here again, the cli in keybInterruptHandler is useless
         ret
 SetCmd      endp
 
-keybInterruptHandler proc far uses ds ax bx cx ; al ah cl ch ;COMMENTED OUT BY: angryzor; REASON: AX consists of AL and AH, CX consists of CL and CH
+keybInterruptHandler proc far uses ds ax bx cx 
         mov ax,@data
         mov ds,ax
         
         mov al, 0ADh        ;Disable keyboard
         call SetCmd
         cli                 ;Disable interrupts. interrupts reenabled when flags are popped
-        xor cx, cx
-Wait4Data:  in  al, 64h     ;Read kbd status port.
-        test    al, 10b     ;Data in buffer? (Input Buffer Status (1= full, 0 = empty))
-        loopz   Wait4Data   ;Wait until data available.
+
+; This code goes haywire on DOSBox. DOSBox seems to never set the input buffer status to 1
+;        xor cx, cx
+;Wait4Data:  in  al, 64h     ;Read kbd status port.
+;        test    al, 10b     ;Data in buffer? (Input Buffer Status (1= full, 0 = empty))
+ ;       loopz   Wait4Data   ;Wait until data available.
         in  al, 60h         ;Get keyboard data.
-        
-;        if debug			; COMMENTED OUT BY: angryzor; REASON: completely unnecessary, we don't even have a printint/crlf function -_-'
-;        xor ah,ah
-;        push ax
-;        call printint
-;        printcrlf
-;        endif
         
         cmp al, 0EEh        ;Echo response?
         je  QuitInt9
@@ -122,7 +118,6 @@ QuitInt9:
 keybInterruptHandler endp
 
 keybInterruptInstall PROC NEAR uses ax bx dx es ds
-;	mov bp,sp			;COMMENTED OUT BY: angryzor; REASON: unnecessary, no stack passed arguments used
     ;Saving old interrupt handler
     mov ah,35h ;Dos function 35h
     mov al,09h ;Interrupt source = 9 = Keyboard
@@ -152,6 +147,12 @@ keybInterruptUninstall PROC NEAR uses ax dx ds
 keybInterruptUninstall ENDP
 
 keybBufferProcess PROC NEAR USES AX BX CX DX
+	mov cl, bKeybInputBufferLoBound ; The circular buffer's lower bound
+	mov ch, bKeybInputBufferHiBound ; The circular buffer's high bound
+
+	sub ch, cl
+	mov bBufLen, ch
+	
 	mov cl, bKeybInputBufferLoBound ; The circular buffer's lower bound
 	mov ch, bKeybInputBufferHiBound ; The circular buffer's high bound
 
@@ -225,6 +226,7 @@ labelKeySpaceUp:
 	procKeySpaceUp
 	jmp continue_loop
 labelError:
+	inc bError
 	jmp continue_loop		; ignore errors for now
 	
 keybProcessExit:
