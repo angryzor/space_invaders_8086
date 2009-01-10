@@ -20,7 +20,56 @@ INCLUDE sblaster.asm
 
 cDoDisplayVolume = 1
 
+clear macro beginchar,numberofchars ;clears numberofchars characters starting at beginchar
+    push ax
+    push cx
+    push es
+    push di
+    mov ax,0b800h ;prepare regs for stosw
+    mov es,ax
+    mov di,beginchar*2
+    ;read current character formatting (little endian so high byte is last in a word)
+    mov ah,byte ptr es:[di+1]
+    mov al,' '   ;space character
+    mov cx,numberofchars ;clear numberofchar characters
+    rep stosw    ;set memory
+    pop di
+    pop es
+    pop cx
+    pop ax
+endm
 
+cls macro ;fill video ram with spaces, formatting black background, white foregorund
+    push ax
+    push cx
+    push es
+    push di
+    mov ax,0b800h ;prepare regs for stosw
+    mov es,ax
+    xor di,di
+    ;read current character formatting (little endian so high byte is last in a word)
+    mov ah,byte ptr es:[di+1]
+    mov al,' '   ;space character
+    mov cx,80*25 ;size of video page ascii mode 
+    rep stosw    ;set memory
+    pop di
+    pop es
+    pop cx
+    pop ax
+endm
+
+hidecursor macro
+    push ax
+    push cx
+    ;use function 1 of int 10h to hide cursor
+    ;formatting of cursor in ch, bit 5 = 1 means hide cursor
+    xor cx,cx
+    or cx,2000h
+    mov ah,01h
+    int 10h
+    pop cx
+    pop ax
+endm
 
 print macro character
     mov ah,02h
@@ -48,7 +97,15 @@ makeBlasterHandler sbbuf, cBufSize, h
 ;	in al, 21h
 	
 IF cDoDisplayVolume
+    cls ;clear screen
+    hidecursor ;hide cursor
 loopb:
+    ;move cursor to 0,0 using int 10h, function 2
+    xor dx,dx
+    mov bh, 0
+    mov ah, 2
+    int 10h
+
 	mov ax, seg sbbuf
 	mov es, ax
 	mov si, offset sbbuf
@@ -71,14 +128,20 @@ noneg:
 	sar ax, cl
 	
 	mov cx, ax
+	mov dx, 60
+	sub dx, cx
 	cmp cx, 0
-	jz crlf
+	jz loopb
 
 loopc:
 	print 'H'
 	loop loopc
-crlf:
-	printcrlf
+	mov cx, dx
+loop_d:
+	print ' '
+	loop loop_d
+;crlf:
+;	printcrlf
 	jmp loopb
 ELSE
 	xor ah, ah

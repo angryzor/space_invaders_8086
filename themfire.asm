@@ -13,6 +13,30 @@ b=25887
     ret
 random2 endp
 
+moveToNextAlive MACRO
+nextAliveLoop:
+	add bx, 4
+	inc si
+	cmp si, (offset bEnemyAlive)+cNumMonsters
+	ja resetToBeginning
+
+nextAliveLoop2:	
+	
+	cmp byte ptr [si], 1
+	jz endNextAlive
+	
+	jmp nextAliveLoop
+resetToBeginning:
+	mov bx, offset wwEnemyPositions
+	mov si, offset bEnemyAlive
+	jmp nextAliveLoop2
+endNextAlive:
+ENDM
+	
+	
+	
+	
+
 theyTryToFire PROC NEAR USES AX BX
 	cmp byte ptr bTheirBulletExists, 1
 	jz noFire
@@ -23,11 +47,19 @@ theyTryToFire PROC NEAR USES AX BX
 	
 ;	mov bl, ah
 ;	xor bh, bh
-	and ax, 1111100b
+	and ax, 11111b
+	mov si, ax
+	shl ax, 1
+	shl ax, 1
 	mov bx, ax
 	
 	add bx, offset wwEnemyPositions
-
+	add si, offset bEnemyAlive
+	cmp byte ptr [si], 1
+	jz okFoundIt
+	moveToNextAlive
+	
+okFoundIt:
 	mov ax, [bx]
 	add ax, 8
 	mov wTheirBulletX, ax
