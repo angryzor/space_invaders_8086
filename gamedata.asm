@@ -3,6 +3,7 @@ bIsRightDown db 0
 bIsSpaceDown db 0
 shipX dw 100
 shipY = 175
+shipY_ForSpeedOptimizations dw shipY
 
 cNumMonsters = 40
 
@@ -54,3 +55,12 @@ bIncValue dw 1
 
 bBulletExists db 0
 wwBulletPosition dw 175, 90
+
+bTheirBulletExists db 0
+wTheirBulletX dw 0
+wTheirBulletY dw 0
+
+randomnumber dw 1254
+
+bLives db 3
+bGameOver db 0

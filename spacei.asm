@@ -12,6 +12,7 @@ INCLUDE shipmov.asm
 INCLUDE monstmov.asm
 INCLUDE collisn.asm
 INCLUDE fire.asm
+INCLUDE themfire.asm
 INCLUDE dispdraw.asm
 d=1
 .STARTUP
@@ -33,24 +34,33 @@ if d
 	checkKeys
 endif
 	call updateMonsterPositions
+	call theyTryToFire
 	updateBulletPosition
+	updateTheirBulletPosition
 	call checkBulletHit
+	call checkShipHit
 if d
 ; UPDATE SCREEN
 	call displayClearScreen
 	
   ; Draw debug line. This line indicates the keybbuf length
-	displayHelpersDebugDrawHorizontalLine bBufLen, 0
+	displayHelpersDebugDrawHorizontalLineB bBufLen, 0
 	
   ; Draw ship
 	graphicsDrawSpriteM bSpaceShip, shipX, shipY
   ; Draw monsters
 	call monstersUpdateDisplay
 	call bulletUpdateDisplay
+	call theirBulletUpdateDisplay
+	call drawLives
   ; Write to VRAM
 	call displayUpdateVram
 endif
+	cmp bGameOver, 1
+	jz gameOver
 	jmp aloop
+
+gameOver:
 	
 ; DEINITIALIZATION STUFF
 exitGame:

@@ -1,4 +1,4 @@
-fireBullet PROC USES AX BX DX
+fireBullet PROC NEAR USES AX BX DX
 	cmp byte ptr bBulletExists, 1
 	jz fireEnd
 	
@@ -18,15 +18,15 @@ updateBulletPosition MACRO
 	cmp byte ptr bBulletExists, 0
 	jz updateBulletPositionEnd
 	mov ax, wwBulletPosition+2
-	dec ax
-	jnz bulletNoDestroy
+	sub ax, 2
+	ja bulletNoDestroy
 	mov bBulletExists, 0
 bulletNoDestroy:
 	mov wwBulletPosition+2, ax
 updateBulletPositionEnd:
 ENDM
 
-checkBulletHit PROC USES AX BX CX DX SI DI
+checkBulletHit PROC NEAR USES AX BX CX DX SI DI
 	cmp byte ptr bBulletExists, 0
 	jz checkBulletHitEnd
 	
@@ -59,7 +59,6 @@ nohit:
 	add ax, 2
 	inc dx
 	add di, 4
-;	add bx, 4
 	
 	loop aloop
 	

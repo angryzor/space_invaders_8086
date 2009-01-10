@@ -73,9 +73,10 @@ dmaSetAddress MACRO buffer, transfer16
 	mov dx, offset buffer
 	
 	add bx, dx
-	jnc dmaSetAddrNoCarry1
-	add ax, 1
-dmaSetAddrNoCarry1:
+	adc ax, 0
+;	jnc dmaSetAddrNoCarry1
+;	add ax, 1
+;dmaSetAddrNoCarry1:
 	; physical address is now <lower 4 bits of AX><BX>
 	out cDMAPagePort, al ; output the page
 	; apparently, for some reason we have to shift right 1 when doing 16bit transfers

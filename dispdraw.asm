@@ -1,4 +1,4 @@
-monstersUpdateDisplay PROC USES SI BX CX
+monstersUpdateDisplay PROC NEAR USES SI BX CX
 	mov ax, seg wwEnemyPositions
 	mov es, ax
 	mov di, offset wwEnemyPositions
@@ -23,9 +23,8 @@ nodraw:
 	ret
 monstersUpdateDisplay ENDP
 
-bulletUpdateDisplay PROC
-	mov al, bBulletExists
-	cmp al, 0
+bulletUpdateDisplay PROC NEAR USES AX DI
+	cmp byte ptr bBulletExists, 0
 	jz nodraw
 	
 	mov ax, seg wwBulletPosition
@@ -35,3 +34,27 @@ bulletUpdateDisplay PROC
 nodraw:
 	ret
 bulletUpdateDisplay ENDP
+
+theirBulletUpdateDisplay PROC
+	cmp byte ptr bTheirBulletExists, 0
+	jz nodraw
+	
+	graphicsDrawSpriteM bBullet, wTheirBulletX, wTheirBulletY
+nodraw:
+	ret
+theirBulletUpdateDisplay ENDP
+
+
+drawLives PROC NEAR USES BX CX
+	mov bx, 10
+	mov cl, bLives
+	xor ch, ch
+	
+aloop:
+	graphicsDrawSpriteM bSpaceship, bx, 190
+	add bx, 20
+	loop aloop
+	ret
+drawLives ENDP
+
+	
