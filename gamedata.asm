@@ -2,9 +2,11 @@ bIsLeftDown db 0
 bIsRightDown db 0
 bIsSpaceDown db 0
 shipX dw 100
+shipY = 175
 
 cNumMonsters = 40
 
+bEnemyAlive	db cNumMonsters dup (1)
 wEnemySpriteAddresses 		dw cNumMonsters dup (bMonster1)
 wwEnemyPositions 			dw  30,  10
 							dw  60,  10
@@ -48,3 +50,7 @@ wwEnemyPositions 			dw  30,  10
 							dw 240,  90
 							
 bIncValue dw 1
+
+
+bBulletExists db 0
+wwBulletPosition dw 0, 0

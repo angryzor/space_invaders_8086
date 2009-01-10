@@ -28,5 +28,9 @@ db				03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh,03fh
 db				000h,03fh,03fh,000h,000h,000h,03fh,03fh,03fh,03fh,000h,000h,000h,03fh,03fh,000h
 db				000h,03fh,000h,000h,000h,000h,000h,03fh,03fh,000h,000h,000h,000h,000h,03fh,000h
 
-bBullet db 		3, 4
-db				03fh,000h,000h,000h,03fh,000h,000h,000h,03fh,000h,03fh,000h,000h,000h,000h,000h
+bBullet db 		3, 5
+db				000h,03fh,000h
+db				000h,03fh,000h
+db				000h,03fh,000h
+db				03fh,03fh,03fh
+db				000h,03fh,000h

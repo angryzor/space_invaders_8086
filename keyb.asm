@@ -17,10 +17,10 @@ RetryLp:    cli         ;Disable ints while accessing HW.
 
 ; Wait until the 8042 is done processing the current command.
 
-        xor cx, cx          ;Allow 65,536 times thru loop.
-Wait4Empty: in  al, 64h         ;Read keyboard status register.
-        test    al, 1b         ;output buffer full?
-        loopnz  Wait4Empty      ;If so, wait until empty.
+;        xor cx, cx          ;Allow 65,536 times thru loop.
+;Wait4Empty: in  al, 64h         ;Read keyboard status register.
+;        test    al, 1b         ;output buffer full?
+;        loopnz  Wait4Empty      ;If so, wait until empty.
 
 ; Okay, send the data to port 60h
 
@@ -234,3 +234,11 @@ keybProcessExit:
 ;	mov bKeybInputBufferHiBound, ch ; Store the circular buffer's high bound
 	ret
 keybBufferProcess ENDP
+
+keybDisableTypematic MACRO
+	; this code normally disables typematic (for extra speed). However... DOSBox doesn't process it (i checked the DOSBox source). Just leaving it in anyway.
+	mov al, 0F9h
+	call SendCmd
+	test KbdFlags4, 80h
+	jnz exitGame
+ENDM
