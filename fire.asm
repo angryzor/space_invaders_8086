@@ -15,12 +15,15 @@ fireEnd:
 fireBullet ENDP
 
 updateBulletPosition MACRO
+	cmp byte ptr bBulletExists, 0
+	jz updateBulletPositionEnd
 	mov ax, wwBulletPosition+2
 	dec ax
 	jnz bulletNoDestroy
 	mov bBulletExists, 0
 bulletNoDestroy:
 	mov wwBulletPosition+2, ax
+updateBulletPositionEnd:
 ENDM
 
 checkBulletHit PROC USES AX BX CX DX SI DI
@@ -37,20 +40,26 @@ checkBulletHit PROC USES AX BX CX DX SI DI
 	
 	mov cx, cNumMonsters
 aloop:
-	mov si, ax
-	call collCheckHit
+	mov si, dx
+	cmp byte ptr [si], 0
 	jz nohit
 	
+	mov si, ax
+	mov si, [si]
+	call collCheckHit
+	jz nohit
+
 	mov si, dx
 	mov byte ptr [si], 0
 	
 	mov bBulletExists, 0
+	jmp checkBulletHitEnd
 	
 nohit:
 	add ax, 2
 	inc dx
 	add di, 4
-	add bx, 4
+;	add bx, 4
 	
 	loop aloop
 	

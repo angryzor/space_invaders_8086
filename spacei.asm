@@ -13,27 +13,29 @@ INCLUDE monstmov.asm
 INCLUDE collisn.asm
 INCLUDE fire.asm
 INCLUDE dispdraw.asm
-
+d=1
 .STARTUP
+if d
 	call displayVgaMode
 	displayHelpersFillGrayScalePalette bScratchPalette
 	displaySetPaletteM bScratchPalette
 
 	call keybInterruptInstall
 	keybDisableTypematic
-	
+endif
 ; MAIN LOOP
 aloop:
-
+if d
 ; PROCESS KEYS
 	call keybBufferProcess
 	
 ; UPDATE POSITIONS
 	checkKeys
+endif
 	call updateMonsterPositions
 	updateBulletPosition
 	call checkBulletHit
-	
+if d
 ; UPDATE SCREEN
 	call displayClearScreen
 	
@@ -47,13 +49,15 @@ aloop:
 	call bulletUpdateDisplay
   ; Write to VRAM
 	call displayUpdateVram
-
+endif
 	jmp aloop
 	
 ; DEINITIALIZATION STUFF
 exitGame:
+if d
 	call keybInterruptUninstall
 	
 	call displaySetOldMode
+endif
 .EXIT
 END

@@ -53,4 +53,4 @@ bIncValue dw 1
 
 
 bBulletExists db 0
-wwBulletPosition dw 0, 0
+wwBulletPosition dw 175, 90
