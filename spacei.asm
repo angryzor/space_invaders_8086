@@ -32,6 +32,7 @@ aloop:
 	checkKeys
 	call updateMonsterPositions
 	updateBulletPosition
+	call checkBulletHit
 	
 ; UPDATE SCREEN
 	call displayClearScreen

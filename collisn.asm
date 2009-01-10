@@ -21,19 +21,19 @@ collCheckHit PROC NEAR USES AX
 	mov ax, [BX+2]
 	add ax, 4
 	cmp ax, [DI+2]
-	jl noCollision
+	jb noCollision
 	mov ax, [BX+2]
 	add ax, 2
 	cmp ax, [DI]
-	jl noCollision
+	jb noCollision
 	mov ax, [DI+2]
 	add ax, [SI+2]
 	cmp [BX+2], ax
-	jl noCollision
+	jb noCollision
 	mov ax, [DI]
 	add ax, [SI]
 	cmp [BX], ax
-	jl noCollision
+	jb noCollision
 collision:
 	xor ax, ax
 	add ax, 1

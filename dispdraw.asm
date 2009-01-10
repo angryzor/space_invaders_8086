@@ -6,9 +6,9 @@ monstersUpdateDisplay PROC USES SI BX CX
 	mov si, offset bEnemyAlive
 	
 	mov cx, cNumMonsters
-	mov ax, 0
+;	mov ax, 0
 doloop:
-	cmp [si], ax
+	cmp byte ptr [si], 0
 	jz nodraw
 	push si
 	push bx
@@ -16,6 +16,7 @@ doloop:
 	pop bx
 	pop si
 nodraw:
+	inc si
 	add di, 4
 	add bx, 2
 	loop doloop

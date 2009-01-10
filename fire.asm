@@ -1,6 +1,5 @@
 fireBullet PROC USES AX BX DX
-	mov al, bBulletExists
-	cmp al, 1
+	cmp byte ptr bBulletExists, 1
 	jz fireEnd
 	
 	mov bx, offset wwBulletPosition
@@ -8,8 +7,7 @@ fireBullet PROC USES AX BX DX
 	add dx, 6
 	
 	mov [bx], dx
-	mov ax, shipY-5
-	mov [bx+2], ax
+	mov word ptr [bx+2], shipY-5
 	
 	mov bBulletExists, 1
 fireEnd:
@@ -24,3 +22,38 @@ updateBulletPosition MACRO
 bulletNoDestroy:
 	mov wwBulletPosition+2, ax
 ENDM
+
+checkBulletHit PROC USES AX BX CX DX SI DI
+	cmp byte ptr bBulletExists, 0
+	jz checkBulletHitEnd
+	
+	mov ax, seg bMonster1
+	mov es, ax
+	
+	mov ax, offset wEnemySpriteAddresses
+	mov dx, offset bEnemyAlive
+	mov di, offset wwEnemyPositions
+	mov bx, offset wwBulletPosition
+	
+	mov cx, cNumMonsters
+aloop:
+	mov si, ax
+	call collCheckHit
+	jz nohit
+	
+	mov si, dx
+	mov byte ptr [si], 0
+	
+	mov bBulletExists, 0
+	
+nohit:
+	add ax, 2
+	inc dx
+	add di, 4
+	add bx, 4
+	
+	loop aloop
+	
+checkBulletHitEnd:
+	ret
+checkBulletHit ENDP
