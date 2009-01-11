@@ -14,7 +14,11 @@ INCLUDE collisn.asm
 INCLUDE fire.asm
 INCLUDE themfire.asm
 INCLUDE dispdraw.asm
+INCLUDE fileio.asm
+INCLUDE sblaster.asm
+INCLUDE sbhelper.asm
 d=1
+makeBlasterHandler sbBuf, cSBBufSize, soundFile1
 .STARTUP
 if d
 	call displayVgaMode
@@ -23,11 +27,15 @@ if d
 
 	call keybInterruptInstall
 	keybDisableTypematic
+	
 endif
+	call sbHelpLoadFiles
+	soundBlasterInit sbBuf, cSBBufSize
 ; MAIN LOOP
 aloop:
 if d
 ; PROCESS KEYS
+	cli
 	call keybBufferProcess
 	
 ; UPDATE POSITIONS
@@ -58,13 +66,18 @@ if d
 endif
 	cmp bGameOver, 1
 	jz gameOver
+	sti
 	jmp aloop
 
 gameOver:
 	
 ; DEINITIALIZATION STUFF
 exitGame:
+	sti
+	soundBlasterRelease
+	call sbHelpUnLoadFiles
 if d
+	
 	call keybInterruptUninstall
 	
 	call displaySetOldMode

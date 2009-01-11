@@ -31,7 +31,7 @@ soundBlasterHandler PROC FAR USES AX BX CX DX DS
 ;	mov ah, 02h
 	;mov dl, 42h
 	;int 21h
-
+	cli
 	mov ah, 03fh				; read command
 	mov bx, h				; file handle
 	mov dx, seg buffer			; buffer
@@ -40,7 +40,6 @@ soundBlasterHandler PROC FAR USES AX BX CX DX DS
 	mov dx, next_bufpart
 	mov cx, bufsize/2				; read size
 	int 21h
-	
 ;	jnc fileReadCleanExit
 ;	
 ;	mov dx, @DATA			; reset seg
@@ -68,8 +67,10 @@ EOIs:
 	mov next_bufpart, dx
 	mov dx, wSBCBaseAddr+0Fh
 	in al, dx
+	
 	mov al, 20h
 	out 20h, al
+	sti
 	iret
 soundBlasterHandler ENDP
 ENDM
@@ -77,6 +78,7 @@ ENDM
 
 soundBlasterInit MACRO buffer, bufsize
 	mov next_bufpart, offset buffer
+	
 	;get old interrupt
 	mov ah, 35h
 	mov al, 0Fh
@@ -101,7 +103,7 @@ soundBlasterInit MACRO buffer, bufsize
 	in al, 21h
 	and al, 01111111y
 	out 21h, al
-	
+
 	mov al, 0F3h
 	mov dx, (wSBCBaseAddr + 0Ch)
 	out dx, al
@@ -143,7 +145,6 @@ TryContinue:
 	je Reset
 NextTry:
 	loop TryContinue
-	strOutM now
 Reset:
 
 	
