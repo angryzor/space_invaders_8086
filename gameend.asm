@@ -36,6 +36,7 @@ checkGameWin ENDP
 
 resetNewLevel PROC NEAR 
 	setmem bEnemyAlive, cNumMonsters, 1
+	setmem bBulletExists, cNumBullets, 0
 	inc bLives
 	ret
 resetNewLevel ENDP
