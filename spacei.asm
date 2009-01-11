@@ -45,7 +45,7 @@ endif
 	call theyTryToFire
 	updateBulletPosition
 	updateTheirBulletPosition
-	call checkBulletHit
+	call checkBulletsHit
 	call checkShipHit
 if d
 ; UPDATE SCREEN
@@ -53,6 +53,17 @@ if d
 	
   ; Draw debug line. This line indicates the keybbuf length
 	displayHelpersDebugDrawHorizontalLineB bBufLen, 0
+	mov si, offset sbBuf
+	mov dh, [si]
+	mov dl, [si+1]
+	cmp dx, 0
+	jns short noneg
+	neg dx
+noneg:
+	mov cl, 7
+	shr dx, cl
+
+	displayHelpersDebugDrawHorizontalLineW dx, 1
 	
   ; Draw ship
 	graphicsDrawSpriteM bSpaceShip, shipX, shipY

@@ -23,15 +23,23 @@ nodraw:
 	ret
 monstersUpdateDisplay ENDP
 
-bulletUpdateDisplay PROC NEAR USES AX DI
-	cmp byte ptr bBulletExists, 0
-	jz nodraw
-	
+bulletUpdateDisplay PROC NEAR USES AX BX CX DI
 	mov ax, seg wwBulletPosition
 	mov es, ax
+	mov bx, offset bBulletExists
 	mov di, offset wwBulletPosition
+	mov cx, cNumBullets
+aloop:
+	cmp byte ptr [bx], 0
+	jz nodraw
+	
+	push bx
 	graphicsDrawSpriteM bBullet, [di], [di+2]
+	pop bx
 nodraw:
+	inc bx
+	add di, 4
+	loop aloop
 	ret
 bulletUpdateDisplay ENDP
 

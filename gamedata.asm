@@ -52,13 +52,10 @@ wwEnemyPositions 			dw  30,  10
 							
 bIncValue dw 1
 
+cNumBullets = 8
 
-bBulletExists db 0, 0, 0, 0
-wwBulletPosition dw 175, 90
-				 dw 175, 90
-				 dw 175, 90
-				 dw 175, 90
-
+bBulletExists db cNumBullets dup (0)
+wwBulletPosition dw cNumBullets dup (?,?)
 bTheirBulletExists db 0
 wTheirBulletX dw 0
 wTheirBulletY dw 0
