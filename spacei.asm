@@ -17,6 +17,8 @@ INCLUDE dispdraw.asm
 INCLUDE fileio.asm
 INCLUDE sblaster.asm
 INCLUDE sbhelper.asm
+INCLUDE gameend.asm
+INCLUDE play.asm
 d=1
 makeBlasterHandler sbBuf, cSBBufSize, soundFile1
 .STARTUP
@@ -53,18 +55,7 @@ if d
 	
   ; Draw debug line. This line indicates the keybbuf length
 	displayHelpersDebugDrawHorizontalLineB bBufLen, 0
-	mov si, offset sbBuf
-	mov dh, [si]
-	mov dl, [si+1]
-	cmp dx, 0
-	jns short noneg
-	neg dx
-noneg:
-	mov cl, 7
-	shr dx, cl
-
-	displayHelpersDebugDrawHorizontalLineW dx, 1
-	
+	call drawVolumeBar
   ; Draw ship
 	graphicsDrawSpriteM bSpaceShip, shipX, shipY
   ; Draw monsters
@@ -77,6 +68,7 @@ noneg:
 endif
 	cmp bGameOver, 1
 	jz gameOver
+	call checkGameWin
 	sti
 	jmp aloop
 
