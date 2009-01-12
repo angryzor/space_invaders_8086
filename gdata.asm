@@ -1,5 +1,5 @@
-INCLUDE sprites.asm
 OldVideoMode db ?
+INCLUDE sprites.asm
 
 .FARDATA? videobufseg
 cVideobufSize			= 64000

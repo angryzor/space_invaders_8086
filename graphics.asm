@@ -153,11 +153,9 @@ ENDM
 ; @result: AX: contains memory offset
 ; @desc: a register-safe version of xyConvertToMemOffset
 xyConvertToMemOffsetSafe MACRO x, y
-	push ax
 	push dx
 	xyConvertToMemOffset x, y
 	pop dx
-	pop ax
 ENDM
 
 ; proc graphicsDraw
@@ -167,7 +165,7 @@ ENDM
 ; @destroys: /
 ; @result: /
 ; @desc: Draws a sprite to memory buffer
-graphicsDrawSprite PROC NEAR USES ax cx di es
+graphicsDrawSprite PROC NEAR USES ax bx cx dx si di es
 	mov ax, seg videobuf		; set video buf segment
 	mov es, ax
 	ASSUME ES:SEG videobuf
@@ -176,8 +174,6 @@ graphicsDrawSprite PROC NEAR USES ax cx di es
 
 	xyConvertToMemOffset bx, dx	; haal sprite coordinaten op en converteer naar een memory offset > AX
 	add di, ax    	; zet beginpositie in de videobuf op de destination coordinaten van de sprite
-	xor dx, dx
-	xor ax, ax
 	mov dx, [si]				; haal sprite width op >  DL
 	mov ax, [si+2]				; haal sprite height op > AL
 
@@ -185,7 +181,7 @@ graphicsDrawSprite PROC NEAR USES ax cx di es
 loopDraw:
 	mov cx, dx
 innerLoopDraw:
-	cmp byte ptr DS:[si], 0FFh ; transparent
+	cmp byte ptr [si], 0FFh ; transparent
 	jz transparent
 	cld
     movsb					; kopieer 1 pixel
