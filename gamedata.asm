@@ -8,23 +8,25 @@ shipY_ForSpeedOptimizations dw shipY
 cNumMonsters = 40
 
 bEnemyAlive	db cNumMonsters dup (1)
-wEnemySpriteAddresses 		dw cNumMonsters dup (bMonster1)
-wwEnemyPositions 			dw  30,  10
-							dw  60,  10
-							dw  90,  10
-							dw 120,  10
-							dw 150,  10
-							dw 180,  10
-							dw 210,  10
-							dw 240,  10
-							dw  30,  30
-							dw  60,  30
-							dw  90,  30
-							dw 120,  30
-							dw 150,  30
-							dw 180,  30
-							dw 210,  30
-							dw 240,  30
+wEnemySpriteAddresses 		dw 16 dup (bMonster3)
+							dw 16 dup (bMonster1)
+							dw 8 dup (bMonster2)
+wwEnemyPositions 			dw  32,  10
+							dw  62,  10
+							dw  92,  10
+							dw 122,  10
+							dw 152,  10
+							dw 182,  10
+							dw 212,  10
+							dw 242,  10
+							dw  32,  30
+							dw  62,  30
+							dw  92,  30
+							dw 122,  30
+							dw 152,  30
+							dw 182,  30
+							dw 212,  30
+							dw 242,  30
 							dw  30,  50
 							dw  60,  50
 							dw  90,  50

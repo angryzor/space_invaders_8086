@@ -62,7 +62,7 @@ the_game:
 aloop:
 if d
 ; PROCESS KEYS
-	;cli
+	cli
 	call keybBufferProcess
 	
 ; UPDATE POSITIONS
@@ -97,17 +97,17 @@ endif
 	cmp bGameOver, 1
 	jz gameOver
 	call checkGameWin
-	;sti
+	sti
 
 	jmp aloop
 
 gameOver:
-;	sti
+	;sti
 ;	mov byte ptr bInMenu, 1
 ;	jmp the_menu
 ; DEINITIALIZATION STUFF
 exitGame:
-	;sti
+	sti
 	soundBlasterRelease
 	call sbHelpUnLoadFiles
 if d
