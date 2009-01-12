@@ -76,3 +76,4 @@ bPaletteFileName db "palette.act$",0
 bBGFileName db "space.raw$",0
 bTitleFileName db "title.raw$",0
 bInMenu db 1
+bNoSound db 0

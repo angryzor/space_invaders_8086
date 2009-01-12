@@ -1,10 +1,8 @@
-sbHelpLoadFiles PROC NEAR USES AX DX
-	fileOpenForReading soundFile1FN, soundFile1, endLoad
-	fileSeekStart soundFile1, 0, 44, endLoad
-	fileRead soundFile1, sbBuf, cSBBufSize, endLoad, endLoad
-endLoad:
-	ret
-sbHelpLoadFiles ENDP
+sbHelpLoadFiles MACRO
+	fileOpenForReading soundFile1FN, soundFile1, noLoadWAVFile
+	fileSeekStart soundFile1, 0, 44, noLoadWAVFile
+	fileRead soundFile1, sbBuf, cSBBufSize, noLoadWAVFile, noLoadWAVFile
+ENDM
 
 sbHelpUnLoadFiles PROC NEAR USES AX DX
 	fileClose soundFile1, endUnLoad

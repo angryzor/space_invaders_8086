@@ -4,12 +4,6 @@ TITLE space-invader
 .DATA 
 ;all data is defined in data.inc
 INCLUDE DATA.asm
-printchar macro char
-    mov dl,char
-    mov ah,02h
-    int 21h
-endm
-
 
 .CODE
 INCLUDE fileio.asm
@@ -26,25 +20,21 @@ INCLUDE sbhelper.asm
 INCLUDE gameend.asm
 INCLUDE play.asm
 INCLUDE timer.asm
-d=1
 makeBlasterHandler sbBuf, cSBBufSize, soundFile1
 .STARTUP
-if d
 	call displayVgaMode
-;	displayHelpersFillGrayScalePalette bScratchPalette
-endif
+
 	call displayHelpersLoadPaletteFile
 	displaySetPaletteM bScratchPalette
-
-if d
 
 	call keybInterruptInstall
 	keybDisableTypematic
 	
-endif
-	call sbHelpLoadFiles
+	sbHelpLoadFiles
 	soundBlasterInit sbBuf, cSBBufSize
-
+	jmp the_menu
+noLoadWAVFile:
+	mov byte ptr bNoSound, 1
 the_menu:
 	mov byte ptr bInMenu, 1
 	call displayHelpersLoadMenu
@@ -60,14 +50,12 @@ the_game:
 	call displayHelpersLoadBG
 ; MAIN LOOP
 aloop:
-if d
 ; PROCESS KEYS
 	cli
 	call keybBufferProcess
 	
 ; UPDATE POSITIONS
 	checkKeys
-endif
 	cmp monstupdms, 0
 	jb nomonsterupdate
 	mov word ptr monstupdms, 0
@@ -78,14 +66,12 @@ nomonsterupdate:
 	updateTheirBulletPosition
 	call checkBulletsHit
 	call checkShipHit
-if d
 ; UPDATE SCREEN
 	graphicsDrawSpriteFarM wwbLargeSprite, 0, 0 
 	
   ; Draw ship
-endif
 	graphicsDrawSpriteM bSpaceShip, shipX, shipY
-if d
+
   ; Draw monsters
 	call monstersUpdateDisplay
 	call bulletUpdateDisplay
@@ -93,7 +79,7 @@ if d
 	call drawLives
   ; Write to VRAM
 	call displayUpdateVram
-endif
+
 	cmp bGameOver, 1
 	jz gameOver
 	call checkGameWin
@@ -102,20 +88,19 @@ endif
 	jmp aloop
 
 gameOver:
-	;sti
-;	mov byte ptr bInMenu, 1
-;	jmp the_menu
 ; DEINITIALIZATION STUFF
 exitGame:
 	sti
+
+	cmp byte ptr bNoSound, 1
+	jz noWAVRelease
+	
 	soundBlasterRelease
 	call sbHelpUnLoadFiles
-if d
-;	call timerUninstall
 	
+noWAVRelease:
 	call keybInterruptUninstall
 	
 	call displaySetOldMode
-endif
 .EXIT
 END
