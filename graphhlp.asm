@@ -29,7 +29,7 @@ ENDM
 displayHelpersLoadPaletteFile PROC NEAR
 	mov ax, seg bScratchPalette
 	mov es, ax
-	mov ES:byte ptr bScratchPalette, 186
+	mov ES:byte ptr bScratchPalette, 200
 	fileOpenForReading bPaletteFileName, wTMPFile, noPaletteLoad
 	fileRead wTMPFile, (bScratchPalette+1), 768, noPaletteLoad, noPaletteLoad
 	fileClose wTMPFile, noPaletteLoad
