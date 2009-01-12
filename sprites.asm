@@ -34,21 +34,21 @@ db				0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh
 db				0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh
 db				0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh
 
-bMonster3 dw	16, 14
-db				0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0b5h,0b5h,0b5h,0b5h,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh
-db				0ffh,0ffh,0ffh,0ffh,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0ffh,0ffh,0ffh,0ffh
-db				0ffh,0ffh,0ffh,0ffh,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0ffh,0ffh,0ffh,0ffh
-db				0ffh,0ffh,0ffh,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0ffh,0ffh,0ffh
-db				0ffh,0ffh,0ffh,0b5h,0b5h,0ffh,0ffh,0b5h,0b5h,0ffh,0ffh,0b5h,0b5h,0ffh,0ffh,0ffh
-db				0ffh,0ffh,0b5h,0b5h,0b5h,0ffh,0ffh,0b5h,0b5h,0ffh,0ffh,0b5h,0b5h,0b5h,0ffh,0ffh
-db				0ffh,0ffh,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0ffh,0ffh
-db				0ffh,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0ffh
-db				0ffh,0ffh,0ffh,0ffh,0ffh,0b5h,0b5h,0ffh,0ffh,0b5h,0b5h,0ffh,0ffh,0ffh,0ffh,0ffh
-db				0ffh,0ffh,0ffh,0ffh,0ffh,0b5h,0b5h,0ffh,0ffh,0b5h,0b5h,0ffh,0ffh,0ffh,0ffh,0ffh
-db				0ffh,0ffh,0ffh,0ffh,0b5h,0b5h,0ffh,0b5h,0b5h,0ffh,0b5h,0b5h,0ffh,0ffh,0ffh,0ffh
-db				0ffh,0ffh,0ffh,0ffh,0b5h,0b5h,0ffh,0b5h,0b5h,0ffh,0b5h,0b5h,0ffh,0ffh,0ffh,0ffh
-db				0ffh,0ffh,0b5h,0b5h,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0b5h,0b5h,0ffh,0ffh
-db				0ffh,0ffh,0b5h,0b5h,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0b5h,0b5h,0ffh,0ffh
+bMonster3 dw	12, 14
+db				0ffh,0ffh,0ffh,0ffh,0b5h,0b5h,0b5h,0b5h,0ffh,0ffh,0ffh,0ffh
+db				0ffh,0ffh,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0ffh,0ffh
+db				0ffh,0ffh,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0ffh,0ffh
+db				0ffh,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0ffh
+db				0ffh,0b5h,0b5h,0ffh,0ffh,0b5h,0b5h,0ffh,0ffh,0b5h,0b5h,0ffh
+db				0b5h,0b5h,0b5h,0ffh,0ffh,0b5h,0b5h,0ffh,0ffh,0b5h,0b5h,0b5h
+db				0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h
+db				0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h,0b5h
+db				0ffh,0ffh,0ffh,0b5h,0b5h,0ffh,0ffh,0b5h,0b5h,0ffh,0ffh,0ffh
+db				0ffh,0ffh,0ffh,0b5h,0b5h,0ffh,0ffh,0b5h,0b5h,0ffh,0ffh,0ffh
+db				0ffh,0ffh,0b5h,0b5h,0ffh,0b5h,0b5h,0ffh,0b5h,0b5h,0ffh,0ffh
+db				0ffh,0ffh,0b5h,0b5h,0ffh,0b5h,0b5h,0ffh,0b5h,0b5h,0ffh,0ffh
+db				0b5h,0b5h,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0b5h,0b5h
+db				0b5h,0b5h,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0b5h,0b5h
 				
 bBullet dw 		3, 5
 db				0ffh,0b5h,0ffh
