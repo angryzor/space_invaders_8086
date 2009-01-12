@@ -61,6 +61,19 @@ noBGLoad:
 	ret
 displayHelpersLoadBG ENDP
 
+displayHelpersLoadMenu PROC NEAR USES AX
+	mov ax, seg wwbLargeSprite
+	mov es, ax
+	ASSUME ES:seg wwbLargeSprite
+	mov word ptr wwbLargeSprite, 320
+	mov word ptr (wwbLargeSprite+2), 200
+	fileOpenForReading bTitleFileName, wTMPFile, noBGLoad
+	fileRead wTMPFile, (wwbLargeSprite+4), cVideoBufSize, noBGLoad, noBGLoad
+	fileClose wTMPFile, noBGLoad
+noBGLoad:
+	ret
+displayHelpersLoadMenu ENDP
+
 displayHelpersDebugDrawHorizontalLineB MACRO llength, yline
 	mov ax, seg videobuf		; set video buf segment
 	mov es, ax

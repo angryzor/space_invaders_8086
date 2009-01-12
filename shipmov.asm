@@ -7,7 +7,10 @@ procKeyRightDown MACRO
 ENDM
 procKeySpaceDown MACRO
 ;	mov bIsSpaceDown, 1
+	cmp byte ptr bInMenu, 1
+	jz spaceDownEnd
 	call fireBullet
+spaceDownEnd:
 ENDM
 procKeyLeftUp MACRO
 	mov bIsLeftDown, 0
@@ -18,6 +21,8 @@ ENDM
 procKeySpaceUp MACRO
 ;	mov bIsSpaceDown, 0
 ;	mov spacetimems, 0
+	mov byte ptr bInMenu, 0
+	
 ENDM
 
 INCLUDE keyb.asm

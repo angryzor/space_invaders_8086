@@ -64,7 +64,7 @@ SetCmd proc near uses cx ax
 ; Okay, send the command :
         pop ax      ;Retrieve command.
         out 64h, al
-;        sti         ;Okay, ints can happen again. (Set Interrupt Flag) ---- angryzor: WTF Art of Assembly bug. If you set them here again, the cli in keybInterruptHandler is useless
+        sti         ;Okay, ints can happen again. (Set Interrupt Flag) 
         ret
 SetCmd      endp
 

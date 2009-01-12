@@ -72,3 +72,5 @@ bGameOver db 0
 wTMPFile dw 0
 bPaletteFileName db "palette.act$",0
 bBGFileName db "space.raw$",0
+bTitleFileName db "title.raw$",0
+bInMenu db 1

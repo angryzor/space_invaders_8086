@@ -36,22 +36,33 @@ endif
 	call displayHelpersLoadPaletteFile
 	displaySetPaletteM bScratchPalette
 
-	call displayHelpersLoadBG
 if d
 
 	call keybInterruptInstall
 	keybDisableTypematic
 	
-;	call timerInstall
-	
 endif
 	call sbHelpLoadFiles
 	soundBlasterInit sbBuf, cSBBufSize
+
+the_menu:
+	mov byte ptr bInMenu, 1
+	call displayHelpersLoadMenu
+	graphicsDrawSpriteFarM wwbLargeSprite, 0, 0 
+	call displayUpdateVram
+wait_loop:
+	call keybBufferProcess
+	cmp byte ptr bInMenu, 1
+	jz wait_loop
+	
+
+the_game:
+	call displayHelpersLoadBG
 ; MAIN LOOP
 aloop:
 if d
 ; PROCESS KEYS
-	cli
+	;cli
 	call keybBufferProcess
 	
 ; UPDATE POSITIONS
@@ -69,12 +80,8 @@ nomonsterupdate:
 	call checkShipHit
 if d
 ; UPDATE SCREEN
-;	call displayClearScreen
-;	call graphicsDrawTest
 	graphicsDrawSpriteFarM wwbLargeSprite, 0, 0 
 	
-  ; Draw debug line. This line indicates the keybbuf length;
-;	displayHelpersDebugDrawHorizontalLineB bBufLen, 0
   ; Draw ship
 endif
 	graphicsDrawSpriteM bSpaceShip, shipX, shipY
@@ -90,15 +97,17 @@ endif
 	cmp bGameOver, 1
 	jz gameOver
 	call checkGameWin
-	sti
+	;sti
 
 	jmp aloop
 
 gameOver:
-	
+;	sti
+;	mov byte ptr bInMenu, 1
+;	jmp the_menu
 ; DEINITIALIZATION STUFF
 exitGame:
-	sti
+	;sti
 	soundBlasterRelease
 	call sbHelpUnLoadFiles
 if d
