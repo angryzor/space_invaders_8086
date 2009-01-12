@@ -84,7 +84,7 @@ aloop:
 	mov si, [si]
 	call collCheckHit
 	jz nohit
-
+; it did hit
 	mov si, dx
 	mov byte ptr [si], 0
 	

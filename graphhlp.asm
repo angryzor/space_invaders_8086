@@ -26,6 +26,28 @@ fillGSLoop:
 	loop fillGSLoop 			; loop
 ENDM
 
+displayHelpersLoadPaletteFile PROC NEAR
+	mov byte ptr bScratchPalette, 180
+	fileOpenForReading bPaletteFileName, wTMPFile, noPaletteLoad
+	fileRead wTMPFile, (bScratchPalette+1), 768, noPaletteLoad, noPaletteLoad
+	fileClose wTMPFile, noPaletteLoad
+noPaletteLoad:
+	ret
+displayHelpersLoadPaletteFile ENDP
+
+displayHelpersLoadBG PROC NEAR USES AX
+	mov ax, seg wwbLargeSprite
+	mov es, ax
+	ASSUME ES:seg wwbLargeSprite
+	mov word ptr wwbLargeSprite, 320
+	mov word ptr wwbLargeSprite, 200
+	fileOpenForReading bBGFileName, wTMPFile, noBGLoad
+	fileRead wTMPFile, (wwbLargeSprite+4), 768, noBGLoad, noBGLoad
+	fileClose wTMPFile, noBGLoad
+noBGLoad:
+	ret
+displayHelpersLoadBG ENDP
+
 displayHelpersDebugDrawHorizontalLineB MACRO llength, yline
 	mov ax, seg videobuf		; set video buf segment
 	mov es, ax

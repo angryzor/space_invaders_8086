@@ -47,7 +47,7 @@ theirBulletUpdateDisplay PROC
 	cmp byte ptr bTheirBulletExists, 0
 	jz nodraw
 	
-	graphicsDrawSpriteM bBullet, wTheirBulletX, wTheirBulletY
+	graphicsDrawSpriteM bBulletEnemy, wTheirBulletX, wTheirBulletY
 nodraw:
 	ret
 theirBulletUpdateDisplay ENDP

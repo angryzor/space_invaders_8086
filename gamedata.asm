@@ -52,7 +52,7 @@ wwEnemyPositions 			dw  30,  10
 							
 bIncValue dw 1
 
-cNumBullets = 8
+cNumBullets = 12
 
 bBulletExists db cNumBullets dup (0)
 wwBulletPosition dw cNumBullets dup (?,?)
@@ -62,5 +62,13 @@ wTheirBulletY dw 0
 
 randomnumber dw 1254
 
+wMonsterTimeout dw 1
 bLives db 3
 bGameOver db 0
+
+
+
+
+wTMPFile dw 0
+bPaletteFileName db "palette.act$",0
+bBGFileName db "space.raw$",0

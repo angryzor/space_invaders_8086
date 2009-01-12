@@ -52,9 +52,9 @@ soundBlasterHandler PROC FAR USES AX BX CX DX DS
 	ASSUME DS:@DATA
 	
 	cmp ax, cx				; check for eof
-	je short exitISR
+	jz exitISR
 EOF:
-	fileSeekStart h, 0, 0, exitISR
+	fileSeekStart h, 0, 44, exitISR
 	
 exitISR:
 	mov dx, next_bufpart

@@ -178,14 +178,24 @@ graphicsDrawSprite PROC NEAR USES ax cx di es
 	add di, ax    	; zet beginpositie in de videobuf op de destination coordinaten van de sprite
 	xor dx, dx
 	xor ax, ax
-	mov dl, [si]				; haal sprite width op >  DL
-	mov al, [si+1]				; haal sprite height op > AL
+	mov dx, [si]				; haal sprite width op >  DL
+	mov ax, [si+2]				; haal sprite height op > AL
 
-	add si, 2					; increment source pointer
+	add si, 4					; increment source pointer
 loopDraw:
 	mov cx, dx
+innerLoopDraw:
+	cmp byte ptr DS:[si], 0FFh ; transparent
+	jz transparent
 	cld
-    rep movsb					; kopieer 1 lijn
+    movsb					; kopieer 1 pixel
+	jmp short notransp
+transparent:
+	inc di
+	inc si
+notransp:
+	dec cx
+	jnz innerLoopDraw
 	add di, cScrWidth 			; verzet dest ptr naar volgende lijn
 	sub di, dx					; begin terug op juiste x waarde
 	dec ax						; teller 1 omlaag
@@ -246,7 +256,8 @@ graphicsDrawSpriteFarM MACRO spriteAddr, x, y
 	ASSUME DS:seg spriteAddr
 	mov si, offset spriteAddr
 	call graphicsDrawSprite
-	mov ds, @DATA
+	mov dx, @DATA
+	mov ds, dx
 	ASSUME DS:@DATA
 ENDM
 

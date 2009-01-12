@@ -6,8 +6,7 @@ procKeyRightDown MACRO
 	mov bIsRightDown, 1
 ENDM
 procKeySpaceDown MACRO
-;	mov bIsSpaceDown, 1
-	call fireBullet
+	mov bIsSpaceDown, 1
 ENDM
 procKeyLeftUp MACRO
 	mov bIsLeftDown, 0
@@ -16,7 +15,8 @@ procKeyRightUp MACRO
 	mov bIsRightDown, 0
 ENDM
 procKeySpaceUp MACRO
-;	mov bIsSpaceDown, 0
+	mov bIsSpaceDown, 0
+	mov spacetimems, 0
 ENDM
 
 INCLUDE keyb.asm
@@ -40,4 +40,12 @@ shipOnLeftBorder:
 rightIsNotDown:
 shipOnRightBorder:
 	mov shipX, bx
+	mov al, bIsSpaceDown
+	cmp al, 0
+	jz spaceIsNotDown
+	cmp spacetimems, 80
+	jb spaceIsNotDown
+	mov spacetimems, 0
+	call fireBullet
+spaceIsNotDown:
 ENDM

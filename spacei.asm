@@ -6,6 +6,7 @@ TITLE space-invader
 INCLUDE DATA.asm
 
 .CODE
+INCLUDE fileio.asm
 INCLUDE graphics.asm
 INCLUDE graphhlp.asm
 INCLUDE shipmov.asm
@@ -14,21 +15,25 @@ INCLUDE collisn.asm
 INCLUDE fire.asm
 INCLUDE themfire.asm
 INCLUDE dispdraw.asm
-INCLUDE fileio.asm
 INCLUDE sblaster.asm
 INCLUDE sbhelper.asm
 INCLUDE gameend.asm
 INCLUDE play.asm
+INCLUDE timer.asm
 d=1
 makeBlasterHandler sbBuf, cSBBufSize, soundFile1
 .STARTUP
 if d
 	call displayVgaMode
-	displayHelpersFillGrayScalePalette bScratchPalette
+;	displayHelpersFillGrayScalePalette bScratchPalette
+	call displayHelpersLoadPaletteFile
+	call displayHelpersLoadBG
 	displaySetPaletteM bScratchPalette
 
 	call keybInterruptInstall
 	keybDisableTypematic
+	
+	call timerInstall
 	
 endif
 	call sbHelpLoadFiles
@@ -43,7 +48,11 @@ if d
 ; UPDATE POSITIONS
 	checkKeys
 endif
+	cmp monstupdms, 0
+	jb nomonsterupdate
+	mov word ptr monstupdms, 0
 	call updateMonsterPositions
+nomonsterupdate:
 	call theyTryToFire
 	updateBulletPosition
 	updateTheirBulletPosition
@@ -52,10 +61,12 @@ endif
 if d
 ; UPDATE SCREEN
 	call displayClearScreen
+;	graphicsDrawSpriteFarM wwbLargeSprite, 0, 0 
 	
   ; Draw debug line. This line indicates the keybbuf length
+	displayHelpersDebugDrawHorizontalLineW wMonsterTimeout, 3
 	displayHelpersDebugDrawHorizontalLineB bBufLen, 0
-	call drawVolumeBar
+;	call drawVolumeBar
   ; Draw ship
 	graphicsDrawSpriteM bSpaceShip, shipX, shipY
   ; Draw monsters
@@ -80,6 +91,7 @@ exitGame:
 	soundBlasterRelease
 	call sbHelpUnLoadFiles
 if d
+	call timerUninstall
 	
 	call keybInterruptUninstall
 	
