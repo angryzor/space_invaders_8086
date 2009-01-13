@@ -1,0 +1,4 @@
+ERRORS FOUND WHILE COMMENTING:
+_________________________________
+
+dispdraw.asm: monstersUpdateDisplay: does not push AX nor ES; doesn't use ASSUME and in fact actually doesn't need to because the ES set is unnecessary
