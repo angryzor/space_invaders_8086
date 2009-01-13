@@ -19,7 +19,6 @@ INCLUDE sblaster.asm
 INCLUDE sbhelper.asm
 INCLUDE gameend.asm
 INCLUDE play.asm
-INCLUDE timer.asm
 makeBlasterHandler sbBuf, cSBBufSize, soundFile1
 .STARTUP
 	call displayVgaMode
@@ -56,11 +55,7 @@ aloop:
 	
 ; UPDATE POSITIONS
 	checkKeys
-	cmp monstupdms, 0
-	jb nomonsterupdate
-	mov word ptr monstupdms, 0
 	call updateMonsterPositions
-nomonsterupdate:
 	call theyTryToFire
 	updateBulletPosition
 	updateTheirBulletPosition
