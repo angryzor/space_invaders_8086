@@ -65,10 +65,10 @@ displayClearScreen PROC NEAR USES ES DI AX CX
 	ASSUME ES:seg videobuf 	;optioneel, voor betere error messages
 	mov DI, offset videobuf ;pointer naar offset videobuf
 	
-	mov AX, 0
-	mov CX, cVideobufSize
+	mov AX, 0               ; we want to fill the videobuf with 0's
+	mov CX, cVideobufSize   ; this has to be done cVideobufSize times
 	cld ;clear direction flag
-	rep stosb
+	rep stosb               ; do CX times : copy one byte from AL to ES::DI
 	ret
 	
 displayClearScreen ENDP
@@ -91,7 +91,7 @@ displayUpdateVram PROC NEAR USES SI AX ES DI DX
 	Xor DI, DI
     mov dx, 03dah ; VGA status port                 
 TestBusyWithVblank:
-	in AL, DX
+	in AL, DX ;because 03dah > 256 we first have to load the address of the desired port in dx;
 	and AL, 8
 	jnz TestBusyWithVblank
 TestStartVblank:
