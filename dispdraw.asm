@@ -37,42 +37,49 @@ monstersUpdateDisplay ENDP
 bulletUpdateDisplay PROC NEAR USES AX BX CX DI
 	mov ax, seg wwBulletPosition				; another completely unnecessary segment register set D:
 	mov es, ax									; 
-	mov bx, offset bBulletExists				; 
-	mov di, offset wwBulletPosition
-	mov cx, cNumBullets
+	mov bx, offset bBulletExists				; we need to check if the bullet exists, if it doesn't, we don't draw it
+	mov di, offset wwBulletPosition				; we need to draw the bullets at the correct positions
+	mov cx, cNumBullets							; loop cNumBullets times (operate on all bullets)
 aloop:
-	cmp byte ptr [bx], 0
-	jz nodraw
+	cmp byte ptr [bx], 0						; see if the bullet is dead
+	jz nodraw									; if so, don't draw it (jump to nodraw)
 	
-	push bx
-	graphicsDrawSpriteM bBullet, [di], [di+2]
-	pop bx
+	push bx										; graphicsDrawSpriteM destroys bx. save it
+	graphicsDrawSpriteM bBullet, [di], [di+2]	; draw the bullet sprite to the correct position ([di],[di+2])
+	pop bx										; restore the bx register
 nodraw:
-	inc bx
-	add di, 4
-	loop aloop
+	inc bx										; increment array pointer
+	add di, 4									; increment array pointer (2 words)
+	loop aloop									; loop for every bullet
 	ret
 bulletUpdateDisplay ENDP
 
+; proc theirBulletUpdateDisplay
+; @destroys: SI, BX, DX
+; @result: /
+; @desc: Draws the "their" bullets
 theirBulletUpdateDisplay PROC
-	cmp byte ptr bTheirBulletExists, 0
-	jz nodraw
+	cmp byte ptr bTheirBulletExists, 0								; see if their bullet is dead
+	jz nodraw														; if so, don't draw it
 	
-	graphicsDrawSpriteM bBulletEnemy, wTheirBulletX, wTheirBulletY
+	graphicsDrawSpriteM bBulletEnemy, wTheirBulletX, wTheirBulletY	; draw their bullet to the correct place
 nodraw:
 	ret
 theirBulletUpdateDisplay ENDP
 
-
+; proc drawLives
+; @destroys: SI, DX
+; @result: /
+; @desc: Draws the ship's remaining lives
 drawLives PROC NEAR USES BX CX
-	mov bx, 10
-	mov cl, bLives
-	xor ch, ch
+	mov bx, 10									; start drawing the remaining lives 10 pixels from the left border
+	mov cl, bLives								; load cl with the number of lives left
+	xor ch, ch									; loop uses cx, not cl, so clear the upper byte.
 	
 aloop:
-	graphicsDrawSpriteM bSpaceship, bx, 190
-	add bx, 20
-	loop aloop
+	graphicsDrawSpriteM bSpaceship, bx, 190		; draw the spaceship sprite at (bx, 190)
+	add bx, 20									; next life will be drawn 20 px further
+	loop aloop									; loop for the number of lives left
 	ret
 drawLives ENDP
 
