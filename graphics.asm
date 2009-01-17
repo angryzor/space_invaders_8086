@@ -91,7 +91,7 @@ displayUpdateVram PROC NEAR USES SI AX ES DI DX
 	Xor DI, DI
     mov dx, 03dah ; VGA status port                 
 TestBusyWithVblank:
-	in AL, DX ;because 03dah > 256 we first have to load the address of the desired port in dx;
+	in AL, DX ;because 03dah > 256 we first had to load the address of the desired port in dx;
 	and AL, 8
 	jnz TestBusyWithVblank
 TestStartVblank:
