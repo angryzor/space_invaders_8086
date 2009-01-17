@@ -1,0 +1,6 @@
+-Graphics -> Nick
+-Keyboard -> Nicolas
+-Movement -> Ship Nico, Monster Nick, Fire Ruben
+-Music -> Ruben
+-Data -> Nicolas
+-Main code -> 1 -> 47 Nico 48 ->83 Ruben 85 -> Nick
