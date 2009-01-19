@@ -6,8 +6,6 @@
 ; @desc: Draws the monsters
 ; @use: Need an abstraction for this. Just gets too cluttered otherwise.
 monstersUpdateDisplay PROC NEAR USES SI BX CX
-	mov ax, seg wwEnemyPositions			; set ES to segment of wwEnemyPositions... why? i honestly don't know. Take this out in the next revision
-	mov es, ax								; FIXME
 	mov di, offset wwEnemyPositions			; we need our enemy positions
 	mov bx, offset wEnemySpriteAddresses	; we need the sprites that every enemy uses
 	mov si, offset bEnemyAlive				; we need to check whether our enemies are alive
@@ -35,8 +33,6 @@ monstersUpdateDisplay ENDP
 ; @result: /
 ; @desc: Draws the ship's bullets
 bulletUpdateDisplay PROC NEAR USES AX BX CX DI
-	mov ax, seg wwBulletPosition				; another completely unnecessary segment register set D:
-	mov es, ax									; 
 	mov bx, offset bBulletExists				; we need to check if the bullet exists, if it doesn't, we don't draw it
 	mov di, offset wwBulletPosition				; we need to draw the bullets at the correct positions
 	mov cx, cNumBullets							; loop cNumBullets times (operate on all bullets)

@@ -1,5 +1,5 @@
-; sprite:=   1 byte width,
-;            1 byte height,
+; sprite:=   1 word width,
+;            1 word height,
 ; 	         arbitrary bytes
 
 bMonster1 dw	16, 14

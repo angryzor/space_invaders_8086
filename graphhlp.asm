@@ -37,11 +37,9 @@ displayHelpersLoadPaletteFile PROC NEAR
 	fileOpenForReading bPaletteFileName, wTMPFile, noPaletteLoad				; open palette file, wTMPFile is file handle
 	fileRead wTMPFile, (bScratchPalette+1), 768, noPaletteLoad, noPaletteLoad	; read 768 bytes from the file
 	fileClose wTMPFile, noPaletteLoad											; close the file
-	mov di, (offset bScratchPalette)+1											; Now, we have a possible value of 0-63 for every color component (RGB) (6 bits per main color, or RGB666). However, an ACT palette is formatted in RGB888 format. We have to convert it.
+	mov di, (offset bScratchPalette)+1											; we want a possible value of 0-63 for every color component (RGB) (6 bits per main color, or RGB666). However, an ACT palette is formatted in RGB888 format. We have to convert it.
 	mov cx, 768																	; And we're gonna do this for every color in the palette
 aloop:
-	mov ax, seg bScratchPalette													; unnecessary
-	mov es, ax																	; "
 	mov al, es:[di]																
 	shr al, 1
 	shr al, 1

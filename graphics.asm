@@ -86,23 +86,23 @@ displayUpdateVram PROC NEAR USES SI AX ES DI DX
 	
 	mov CX, cVideobufSize
 
-	mov AX, 0A000h ;address of vram
+	mov AX, 0A000h 				;address of vram
 	mov ES, AX	
 	Xor DI, DI
-    mov dx, 03dah ; VGA status port                 
+    mov dx, 03dah 				;VGA status port                 
 TestBusyWithVblank:
-	in AL, DX ;because 03dah > 256 we first had to load the address of the desired port in dx;
+	in AL, DX 					;because 03dah > 256 we first had to load the address of the desired port in dx;
 	and AL, 8
 	jnz TestBusyWithVblank
 TestStartVblank:
 	in AL, DX
 	and AL, 8
 	jz TestStartVblank
-	;copy videobuf to vram
-	cld
+								;copy videobuf to vram
+	cld							;zodat je si en di verhoogt niet verlaagt
 	rep movsb 
 	
-	mov AX, @DATA ; verzekeren dat DS terug naar DATA segment wijst
+	mov AX, @DATA 				;verzekeren dat DS terug naar DATA segment wijst
 	mov DS, AX
 	ASSUME DS:@DATA
 	ret
@@ -116,9 +116,9 @@ displayUpdateVram ENDP
 ; @desc: sets video palette to palette in ES:DX
 displaySetPalette PROC NEAR USES AX BX CX DX
 	mov ax, 1012h
-	xor bx, bx
+	xor bx, bx					;starting colour register
 	xor cx, cx
-	mov cl, byte ptr es:[si]
+	mov cl, byte ptr es:[si]	;nr of registers to set
 	mov dx, si
 	inc dx
 	int 10h
@@ -174,8 +174,8 @@ graphicsDrawSprite PROC NEAR USES ax bx cx dx si di es
 
 	xyConvertToMemOffset bx, dx	; haal sprite coordinaten op en converteer naar een memory offset > AX
 	add di, ax    	; zet beginpositie in de videobuf op de destination coordinaten van de sprite
-	mov dx, [si]				; haal sprite width op >  DL
-	mov ax, [si+2]				; haal sprite height op > AL
+	mov dx, [si]				; haal sprite width op >  DX
+	mov ax, [si+2]				; haal sprite height op > AX
 
 	add si, 4					; increment source pointer
 loopDraw:
